@@ -19,7 +19,7 @@ enum class NewsMessageType(
     BAD_THING_HAPPENED("leave.ogg", 1.0f),
     CAPTURE_GOOD("bonus1.ogg", 1.5f),
     CAPTURE_BAD("bonus1.ogg", 0.5f),
-    NEUTRAL_CAPTURE("rampage.ogg",1f)
+    CAPTURE_NEUTRAL("rampage.ogg",1f)
 }
 
 fun teamColorText(team: Team?, text: String): String {

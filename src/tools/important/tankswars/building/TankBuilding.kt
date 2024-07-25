@@ -39,7 +39,7 @@ fun TankBuildingCapturable.manualCapture(capturingTeam: Team) {
             if (team == Game.playerTank.team)
                 NewsMessageType.CAPTURE_BAD
             else
-                NewsMessageType.NEUTRAL_CAPTURE
+                NewsMessageType.CAPTURE_NEUTRAL
     )
 
     onManualCapture(team, capturingTeam)
