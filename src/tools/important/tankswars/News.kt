@@ -4,11 +4,11 @@ import tanks.Drawing
 import tanks.Panel
 import tanks.Team
 
-private const val startingLifetime = 300.0
+private const val STARTING_LIFETIME = 300.0
 private class NewsMessage(
     val text: String,
 ) {
-    var lifetime: Double = startingLifetime
+    var lifetime: Double = STARTING_LIFETIME
 }
 
 enum class NewsMessageType(
@@ -71,7 +71,7 @@ object News {
         Drawing.drawing.setInterfaceFontSize(fontSize)
         for ((i, message) in newsMessages.withIndex()) {
             val offset = (Drawing.drawing.interfaceSizeY / 10) * (i+1)
-            val opacity = ((message.lifetime / startingLifetime) * 127.5) + 72.5
+            val opacity = ((message.lifetime / STARTING_LIFETIME) * 127.5) + 72.5
 
             val text = message.text
 

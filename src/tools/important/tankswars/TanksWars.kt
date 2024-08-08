@@ -118,3 +118,6 @@ class TanksWars : Extension("TanksWars") {
 fun main() {
     Tanks.launchWithExtensions(arrayOf("debug"), arrayOf(TanksWars()), IntArray(0))
 }
+
+@Suppress("unused")
+const val EXTENSION_VERSION = "Tanks Wars 0.1.0"

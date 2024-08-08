@@ -6,7 +6,7 @@ import tools.important.tankswars.News
 import tools.important.tankswars.NewsMessageType
 import tools.important.tankswars.teamColorText
 
-const val unclaimedHealth = 0.001
+const val UNCLAIMED_HEALTH = 0.001
 
 interface TankBuildingSpawner {
     val defaultChance: Double
@@ -23,7 +23,7 @@ fun TankBuildingCapturable.capture(capturingTeam: Team?) {
     onCapture(team, capturingTeam)
 
     team = capturingTeam
-    health = if (capturingTeam != null) baseHealth else unclaimedHealth
+    health = if (capturingTeam != null) baseHealth else UNCLAIMED_HEALTH
     destroy = false
 }
 
@@ -124,7 +124,7 @@ abstract class TankBuilding(name: String, x: Double, y: Double, angle: Double) :
 
     override fun update() {
         super.update()
-        if (team == null) health = unclaimedHealth
+        if (team == null) health = UNCLAIMED_HEALTH
 
         if (this is TankBuildingSpawner) spawnChance = if (team != null) defaultChance else 0.0
     }
