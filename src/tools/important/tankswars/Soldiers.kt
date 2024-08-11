@@ -21,7 +21,7 @@ open class TankSoldier(name: String, x: Double, y: Double, angle: Double) : Tank
         enableMineAvoidance = true
         enableBulletAvoidance = true
 
-        canHide = false
+        enablePredictiveFiring = false
 
         enablePathfinding = true
         stopSeekingOnSight = false
@@ -32,7 +32,7 @@ open class TankSoldier(name: String, x: Double, y: Double, angle: Double) : Tank
         bullet.bounces = 0
         bullet.damage = 1.0 / 5.0
 
-        health = 0.5
+        health = 0.4
 
         glowSize = 0.0
         glowIntensity = 0.0
@@ -79,6 +79,6 @@ class TankSoldierDefender(name: String, x: Double, y: Double, angle: Double) : T
         stayNearParent = true
         maxDistanceFromParent = 100.0
 
-        health = 0.9
+        health = 0.6
     }
 }
