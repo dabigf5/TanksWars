@@ -13,7 +13,9 @@ class TankSentry(name: String, x: Double, y: Double, angle: Double) : TankBuildi
     init {
         description = "An armored sentry gun that will shoot down any enemy tanks in its range"
         shootAIType = ShootAI.straight
-        turretLength = 100.0
+
+        turretLength = 65.0
+        turretSize = 10.0
 
         bullet.bounces = 0
         bullet.speed = 12.0
