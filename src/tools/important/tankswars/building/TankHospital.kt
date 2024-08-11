@@ -28,8 +28,10 @@ class TankHospital(name: String, x: Double, y: Double, angle: Double) : TankBuil
         health = baseHealth
     }
 
-    private val healingRange = Game.tile_size * 2.0
-    private val healingPerUpdate = 1.0 / 1000.0
+    private companion object {
+        const val HEALING_RANGE = Game.tile_size * 2.0
+        const val HEALING_PER_UPDATE = 1.0 / 1000.0
+    }
 
     private var spin = 0.0
     override fun update() {
@@ -42,11 +44,11 @@ class TankHospital(name: String, x: Double, y: Double, angle: Double) : TankBuil
             if (movable == this) continue
             if (movable !is Tank) continue
             if (!Team.isAllied(this, movable)) continue
-            if (Movable.distanceBetween(this, movable) > healingRange) continue
+            if (Movable.distanceBetween(this, movable) > HEALING_RANGE) continue
 
             if (movable.health < movable.baseHealth) {
                 movable.health = min(
-                    movable.health + (healingPerUpdate * Panel.frameFrequency),
+                    movable.health + (HEALING_PER_UPDATE * Panel.frameFrequency),
                     movable.baseHealth
                 )
                 if (movable == Game.playerTank) Drawing.drawing.playSound("heal.ogg", 1.0f, 0.1f)
@@ -62,7 +64,7 @@ class TankHospital(name: String, x: Double, y: Double, angle: Double) : TankBuil
         val b = color.third
 
         Drawing.drawing.setColor(r,g,b,100.0)
-        Drawing.drawing.fillOval(posX,posY, healingRange*2, healingRange*2)
+        Drawing.drawing.fillOval(posX,posY, HEALING_RANGE*2, HEALING_RANGE*2)
 
         super.draw()
     }

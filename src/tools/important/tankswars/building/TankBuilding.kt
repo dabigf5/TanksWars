@@ -46,6 +46,8 @@ fun TankBuildingCapturable.manualCapture(capturingTeam: Team) {
     capture(capturingTeam)
 }
 
+
+
 interface TankBuildingStationary
 
 fun TankBuildingStationary.resetPosition() {
@@ -87,7 +89,6 @@ abstract class TankBuilding(name: String, x: Double, y: Double, angle: Double) :
 
     abstract val buildingDisplayName: String
 
-
     override fun damage(amount: Double, source: IGameObject?): Boolean {
         if (source == null) {
             return false
@@ -99,7 +100,6 @@ abstract class TankBuilding(name: String, x: Double, y: Double, angle: Double) :
         super.damage(amount, source)
 
         if (health > 0) {
-
             return false
         }
 
