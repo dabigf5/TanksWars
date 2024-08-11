@@ -96,6 +96,7 @@ abstract class TankBuilding(name: String, x: Double, y: Double, angle: Double) :
 
         if (source !is Movable) return false
         if (source.team == null) return false
+        if (source.team == team) return false
 
         super.damage(amount, source)
 
