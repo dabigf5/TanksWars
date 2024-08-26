@@ -84,9 +84,7 @@ class TanksWars : Extension("TanksWars") {
         val screen = Game.screen
 
         if (screen is ScreenGame)
-            if (
-                screen.paused
-            ) return
+            if (screen.paused) return
 
         for (movable in Game.movables) {
             val team = movable.team ?: continue
