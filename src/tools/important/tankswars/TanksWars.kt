@@ -100,13 +100,17 @@ class TanksWars : Extension("TanksWars") {
 
             val wasCommander = movable is TankPlayer || movable.name.startsWith("cmd")
 
+            val movableNameFormatted = teamColorText(team, movable.name
+                .replace('_', ' ')
+                .upperFirst())
+
             News.sendMessage(
-                "${teamColorText(team, movable.name.upperFirst())} has been defeated!",
-                if (Team.isAllied(
-                        movable,
-                        Game.playerTank
-                )
-                ) NewsMessageType.BAD_THING_HAPPENED else NewsMessageType.GOOD_THING_HAPPENED
+                "$movableNameFormatted has been defeated!",
+
+                if (Team.isAllied(movable, Game.playerTank))
+                    NewsMessageType.BAD_THING_HAPPENED
+                else
+                    NewsMessageType.GOOD_THING_HAPPENED
             )
 
             if (wasCommander) fuck(team)
