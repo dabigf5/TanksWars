@@ -122,4 +122,4 @@ fun main() {
 }
 
 @Suppress("unused")
-const val EXTENSION_VERSION = "Tanks Wars 0.1.1"
+const val EXTENSION_VERSION = "Tanks Wars 0.1.2"
