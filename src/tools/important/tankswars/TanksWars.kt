@@ -27,7 +27,6 @@ class TanksWars : Extension("TanksWars") {
         register(TankKeep::class.java, "tw_keep")
         register(TankKeepBase::class.java, "tw_keepbase")
         register(TankBarracks::class.java, "tw_barracks")
-        register(TankHospital::class.java, "tw_hospital")
         register(TankSentry::class.java, "tw_sentry")
 
         register(TankFiller::class.java, "tw_filler4")
