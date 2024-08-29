@@ -42,10 +42,4 @@ class TankSentry(name: String, x: Double, y: Double, angle: Double) : TankBuildi
         emblemG = 255.0
         emblemB = 255.0
     }
-
-    override fun update() {
-        shootAIType = if (team != null) ShootAI.straight else ShootAI.none
-
-        super.update()
-    }
 }
