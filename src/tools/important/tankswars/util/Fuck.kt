@@ -12,7 +12,10 @@ import tools.important.tankswars.building.tank.capture
 fun fuck(team: Team) {
     News.sendMessage(
         "${teamColorText(team, team.name.upperFirst())} fled the battlefield!",
-        if (team == Game.playerTank.team) NewsMessageType.BAD_THING_HAPPENED else NewsMessageType.GOOD_THING_HAPPENED
+        if (team == Game.playerTank.team)
+            NewsMessageType.BAD_THING_HAPPENED
+        else
+            NewsMessageType.GOOD_THING_HAPPENED
     )
 
     for (movable in Game.movables) {
