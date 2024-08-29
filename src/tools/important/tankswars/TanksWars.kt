@@ -2,57 +2,22 @@ package tools.important.tankswars
 
 import main.Tanks
 import tanks.Game
-import tanks.Team
 import tanks.extension.Extension
-import tanks.gui.screen.ScreenGame
-import tanks.tank.*
-import tools.important.tankswars.building.*
+import tanks.tank.Tank
+import tools.important.tankswars.building.tank.*
+import tools.important.tankswars.util.deathCheck
 
-fun fuck(team: Team) {
-    News.sendMessage(
-        "${teamColorText(team, team.name.upperFirst())} fled the battlefield!",
-        if (team == Game.playerTank.team) NewsMessageType.BAD_THING_HAPPENED else NewsMessageType.GOOD_THING_HAPPENED
-    )
 
-    for (movable in Game.movables) {
-        if (movable.team != team) continue
-
-        if (movable is TankBuildingCapturable) {
-            movable.capture(null)
-            continue
-        }
-
-        if (movable is Explosion) {
-            movable.damage = 0.0
-            continue
-        }
-
-        if (movable is Mine) {
-            movable.damage = 0.0
-            movable.destroy = true
-            continue
-        }
-
-        movable.destroy = true
-    }
-}
-
-class TankFiller(name: String, x: Double, y: Double, angle: Double) : TankAIControlled(name,
-    x,
-    y,
-    0.0,
-    0.0,
-    0.0,
-    0.0,
-    angle,
-    ShootAI.none
-)
-
-fun register(tankClass: Class<out Tank>, name: String) {
+private fun register(tankClass: Class<out Tank>, name: String) {
     Game.registerTank(tankClass, name, 0.0)
 }
 
 class TanksWars : Extension("TanksWars") {
+    companion object {
+        @Suppress("unused")
+        const val EXTENSION_VERSION = "Tanks Wars 0.1.2"
+    }
+
     override fun setUp() {
         register(TankFiller::class.java, "tw_filler1")
         register(TankFiller::class.java, "tw_filler2")
@@ -79,40 +44,7 @@ class TanksWars : Extension("TanksWars") {
     override fun update() {
         News.update()
 
-        if (ScreenGame.finished) return
-
-        val screen = Game.screen
-
-        if (screen is ScreenGame)
-            if (screen.paused) return
-
-        for (movable in Game.movables) {
-            val team = movable.team ?: continue
-
-            if (movable !is Tank) continue
-            if (movable is TankSoldier) continue
-            if (movable is TankBuilding) continue
-
-            if (!movable.destroy) continue
-            if (movable.destroyTimer > 0.0) continue
-
-            val wasCommander = movable is TankPlayer || movable.name.startsWith("cmd")
-
-            val movableNameFormatted = teamColorText(team, movable.name
-                .replace('_', ' ')
-                .upperFirst())
-
-            News.sendMessage(
-                "$movableNameFormatted has been defeated!",
-
-                if (Team.isAllied(movable, Game.playerTank))
-                    NewsMessageType.BAD_THING_HAPPENED
-                else
-                    NewsMessageType.GOOD_THING_HAPPENED
-            )
-
-            if (wasCommander) fuck(team)
-        }
+        deathCheck()
     }
 }
 
@@ -120,6 +52,3 @@ class TanksWars : Extension("TanksWars") {
 fun main() {
     Tanks.launchWithExtensions(arrayOf("debug"), arrayOf(TanksWars()), IntArray(0))
 }
-
-@Suppress("unused")
-const val EXTENSION_VERSION = "Tanks Wars 0.1.2"

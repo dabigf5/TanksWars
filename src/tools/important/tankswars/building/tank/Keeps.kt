@@ -1,8 +1,9 @@
-package tools.important.tankswars.building
+package tools.important.tankswars.building.tank
 
 import tanks.*
 import tools.important.tankswars.TankSoldierDefender
-import tools.important.tankswars.fuck
+import tools.important.tankswars.util.fuck
+import tools.important.tankswars.util.upperFirst
 
 open class TankKeep(name: String, x: Double, y: Double, angle: Double) : TankBuilding(
     name,
@@ -83,10 +84,6 @@ open class TankKeep(name: String, x: Double, y: Double, angle: Double) : TankBui
         Drawing.drawing.setColor(team.teamColorR, team.teamColorG, team.teamColorB, 255.0 - progress * 255.0)
         Drawing.drawing.fillOval(posX, posY, circleSize, circleSize)
     }
-}
-
-fun String.upperFirst(): String {
-    return this.replaceFirstChar {if (it.isLowerCase()) it.uppercase() else it.toString()}
 }
 
 class TankKeepBase(name: String, x: Double, y: Double, angle: Double) : TankKeep(

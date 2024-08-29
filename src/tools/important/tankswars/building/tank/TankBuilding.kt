@@ -1,10 +1,11 @@
-package tools.important.tankswars.building
+package tools.important.tankswars.building.tank
 
 import tanks.*
 import tanks.tank.TankAIControlled
 import tools.important.tankswars.News
 import tools.important.tankswars.NewsMessageType
-import tools.important.tankswars.teamColorText
+import tools.important.tankswars.util.teamColorText
+import tools.important.tankswars.util.upperFirst
 
 const val UNCLAIMED_HEALTH = 0.001
 

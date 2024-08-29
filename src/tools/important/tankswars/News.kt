@@ -2,13 +2,15 @@ package tools.important.tankswars
 
 import tanks.Drawing
 import tanks.Panel
-import tanks.Team
 
-private const val STARTING_LIFETIME = 300.0
 private class NewsMessage(
     val text: String,
 ) {
-    var lifetime: Double = STARTING_LIFETIME
+    companion object {
+        const val STARTING_NEWS_MESSAGE_LIFETIME = 300.0
+    }
+
+    var lifetime: Double = STARTING_NEWS_MESSAGE_LIFETIME
 }
 
 enum class NewsMessageType(
@@ -20,23 +22,6 @@ enum class NewsMessageType(
     CAPTURE_GOOD("bonus1.ogg", 1.5f),
     CAPTURE_BAD("bonus1.ogg", 0.5f),
     CAPTURE_NEUTRAL("rampage.ogg",1f)
-}
-
-fun teamColorText(team: Team?, text: String): String {
-    return "${teamColorFormat(team)}$text§255255255255"
-}
-
-fun teamColorFormat(team: Team?): String {
-    if (team == null) return "§128128128255"
-
-    if (team.enableColor)
-        return colorToStringFormat(team.teamColorR.toInt(), team.teamColorG.toInt(), team.teamColorB.toInt())
-
-    return "§255255255255"
-}
-
-fun colorToStringFormat(r: Int, g: Int, b: Int): String {
-   return "§%03d%03d%03d255".format(r,g,b)
 }
 
 object News {
@@ -71,7 +56,7 @@ object News {
         Drawing.drawing.setInterfaceFontSize(fontSize)
         for ((i, message) in newsMessages.withIndex()) {
             val offset = (Drawing.drawing.interfaceSizeY / 10) * (i+1)
-            val opacity = ((message.lifetime / STARTING_LIFETIME) * 127.5) + 72.5
+            val opacity = ((message.lifetime / NewsMessage.STARTING_NEWS_MESSAGE_LIFETIME) * 127.5) + 72.5
 
             val text = message.text
 

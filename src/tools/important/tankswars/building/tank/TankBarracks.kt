@@ -1,4 +1,4 @@
-package tools.important.tankswars.building
+package tools.important.tankswars.building.tank
 
 import tanks.Team
 import tools.important.tankswars.TankSoldier

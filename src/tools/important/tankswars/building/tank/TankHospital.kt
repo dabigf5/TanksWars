@@ -1,4 +1,4 @@
-package tools.important.tankswars.building
+package tools.important.tankswars.building.tank
 
 import tanks.*
 import tanks.tank.Tank
@@ -64,7 +64,7 @@ class TankHospital(name: String, x: Double, y: Double, angle: Double) : TankBuil
         val b = color.third
 
         Drawing.drawing.setColor(r,g,b,100.0)
-        Drawing.drawing.fillOval(posX,posY, HEALING_RANGE*2, HEALING_RANGE*2)
+        Drawing.drawing.fillOval(posX,posY, HEALING_RANGE *2, HEALING_RANGE *2)
 
         super.draw()
     }
