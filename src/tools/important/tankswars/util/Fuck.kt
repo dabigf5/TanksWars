@@ -6,8 +6,6 @@ import tanks.tank.Explosion
 import tanks.tank.Mine
 import tools.important.tankswars.News
 import tools.important.tankswars.NewsMessageType
-import tools.important.tankswars.building.tank.TankBuildingCapturable
-import tools.important.tankswars.building.tank.capture
 
 fun fuck(team: Team) {
     News.sendMessage(
@@ -21,10 +19,10 @@ fun fuck(team: Team) {
     for (movable in Game.movables) {
         if (movable.team != team) continue
 
-        if (movable is TankBuildingCapturable) {
-            movable.capture(null)
-            continue
-        }
+//        if (movable is TankBuildingCapturable) {
+//            movable.capture(null)
+//            continue
+//        }
 
         if (movable is Explosion) {
             movable.damage = 0.0

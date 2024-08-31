@@ -4,11 +4,10 @@ import main.Tanks
 import tanks.Game
 import tanks.extension.Extension
 import tanks.tank.Tank
-import tools.important.tankswars.building.tank.*
 import tools.important.tankswars.util.deathCheck
 
 
-private fun register(tankClass: Class<out Tank>, name: String) {
+private fun registerTank(tankClass: Class<out Tank>, name: String) {
     Game.registerTank(tankClass, name, 0.0)
 }
 
@@ -19,21 +18,9 @@ class TanksWars : Extension("TanksWars") {
     }
 
     override fun setUp() {
-        register(TankFiller::class.java, "tw_filler1")
-        register(TankFiller::class.java, "tw_filler2")
-        register(TankFiller::class.java, "tw_filler3")
-
-        register(TankOutpost::class.java, "tw_outpost")
-        register(TankKeep::class.java, "tw_keep")
-        register(TankKeepBase::class.java, "tw_keepbase")
-        register(TankBarracks::class.java, "tw_barracks")
-        register(TankSentry::class.java, "tw_sentry")
-
-        register(TankFiller::class.java, "tw_filler4")
-
-        register(TankSoldier::class.java, "tw_soldier")
-        register(TankSoldierCaptain::class.java, "tw_soldiercaptain")
-        register(TankSoldierDefender::class.java, "tw_soldierdefender")
+        registerTank(TankSoldier::class.java, "tw_soldier")
+        registerTank(TankSoldierCaptain::class.java, "tw_soldiercaptain")
+        registerTank(TankSoldierDefender::class.java, "tw_soldierdefender")
     }
 
     override fun draw() {

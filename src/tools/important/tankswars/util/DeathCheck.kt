@@ -8,7 +8,6 @@ import tanks.tank.TankPlayer
 import tools.important.tankswars.News
 import tools.important.tankswars.NewsMessageType
 import tools.important.tankswars.TankSoldier
-import tools.important.tankswars.building.tank.TankBuilding
 
 fun deathCheck() {
     if (ScreenGame.finished) return
@@ -21,7 +20,7 @@ fun deathCheck() {
 
         if (movable !is Tank) continue
         if (movable is TankSoldier) continue
-        if (movable is TankBuilding) continue
+//        if (movable is TankBuilding) continue
 
         if (!movable.destroy) continue
         if (movable.destroyTimer > 0.0) continue
