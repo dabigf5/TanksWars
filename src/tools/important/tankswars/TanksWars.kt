@@ -36,5 +36,5 @@ class TanksWars : Extension("TanksWars") {
 
 
 fun main() {
-    Tanks.launchWithExtensions(arrayOf("debug"), arrayOf(TanksWars()), IntArray(0))
+    Tanks.launchWithExtensions(arrayOf("debug"), arrayOf(TanksWars()), null)
 }
