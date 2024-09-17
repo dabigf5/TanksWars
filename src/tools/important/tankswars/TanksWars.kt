@@ -9,12 +9,15 @@ import tanks.gui.screen.ScreenPartyLobby
 import tanks.gui.screen.leveleditor.ScreenLevelEditorOverlay
 import tanks.tank.Tank
 import tools.important.tankswars.building.BuildingType
+import tools.important.tankswars.core.News
+import tools.important.tankswars.core.deathCheck
+import tools.important.tankswars.core.drawBuildings
+import tools.important.tankswars.core.updateBuildings
 import tools.important.tankswars.event.EventBuildingWasCaptured
 import tools.important.tankswars.tank.TankFiller
 import tools.important.tankswars.tank.TankSoldier
 import tools.important.tankswars.tank.TankSoldierCaptain
 import tools.important.tankswars.tank.TankSoldierDefender
-import tools.important.tankswars.util.deathCheck
 import tanks.network.NetworkEventMap.register as registerNetworkEvent
 
 

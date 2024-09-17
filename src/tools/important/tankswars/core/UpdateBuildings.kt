@@ -1,4 +1,4 @@
-package tools.important.tankswars
+package tools.important.tankswars.core
 
 import tanks.Drawing
 import tanks.Game

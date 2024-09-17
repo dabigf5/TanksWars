@@ -4,7 +4,7 @@ import tanks.Game
 import tanks.tank.Tank
 import tools.important.tankswars.building.tank.TankBuilding
 import tools.important.tankswars.building.tank.TankKeep
-import tools.important.tankswars.News
+import tools.important.tankswars.core.News
 
 /**
  * An enum class whose entries contain shared or client-sided constant information about the buildings.

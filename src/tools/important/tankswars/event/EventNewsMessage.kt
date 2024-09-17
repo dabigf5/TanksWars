@@ -3,8 +3,8 @@ package tools.important.tankswars.event
 import io.netty.buffer.ByteBuf
 import tanks.gui.screen.ScreenPartyLobby
 import tanks.network.event.PersonalEvent
-import tools.important.tankswars.News
-import tools.important.tankswars.NewsMessageType
+import tools.important.tankswars.core.News
+import tools.important.tankswars.core.NewsMessageType
 import tools.important.tankswars.util.readString
 import tools.important.tankswars.util.writeString
 

@@ -1,13 +1,13 @@
-package tools.important.tankswars.util
+package tools.important.tankswars.core
 
 import tanks.Game
 import tanks.Team
 import tanks.tank.Explosion
 import tanks.tank.Mine
-import tools.important.tankswars.News
-import tools.important.tankswars.NewsMessageType
+import tools.important.tankswars.building.tank.TankBuilding
+import tools.important.tankswars.util.*
 
-fun fuck(team: Team) {
+fun flee(team: Team) {
     News.sendMessage(
         "${teamColorText(team, team.name.upperFirst())} fled the battlefield!",
         if (team == Game.playerTank.team)
@@ -19,10 +19,9 @@ fun fuck(team: Team) {
     for (movable in Game.movables) {
         if (movable.team != team) continue
 
-//        if (movable is TankBuildingCapturable) {
-//            movable.capture(null)
-//            continue
-//        }
+        if (movable is TankBuilding) {
+            if (movable.type.capturable) movable.capture(null)
+        }
 
         if (movable is Explosion) {
             movable.damage = 0.0

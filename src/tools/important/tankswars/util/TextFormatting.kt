@@ -18,3 +18,12 @@ fun teamColorFormat(team: Team?): String {
 fun colorToStringFormat(r: Int, g: Int, b: Int): String {
     return "§%03d%03d%03d255".format(r,g,b)
 }
+
+
+fun String.upperFirst(): String {
+    return this.replaceFirstChar {if (it.isLowerCase()) it.uppercase() else it.toString()}
+}
+
+fun String.formatInternalName(): String {
+    return replace('_', ' ').upperFirst()
+}

@@ -5,9 +5,10 @@ import tanks.Game
 import tanks.Team
 import tanks.network.event.PersonalEvent
 import tanks.tank.Tank
-import tools.important.tankswars.News
-import tools.important.tankswars.NewsMessageType
+import tools.important.tankswars.core.News
+import tools.important.tankswars.core.NewsMessageType
 import tools.important.tankswars.building.BuildingType
+import tools.important.tankswars.util.formatInternalName
 import tools.important.tankswars.util.teamColorText
 
 /**
@@ -34,7 +35,7 @@ class EventBuildingWasCaptured(
     override fun execute() {
         val buildingType = BuildingType.getBuildingTypeFromName(capturedTank!!)!!
         News.sendMessage(
-            "${teamColorText(capturedTank!!.team, buildingType.displayName)} was captured by ${teamColorText(capturingTank!!.team, capturingTank!!.name)}",
+            "${teamColorText(capturedTank!!.team, buildingType.displayName.formatInternalName())} was captured by ${teamColorText(capturingTank!!.team, capturingTank!!.name.formatInternalName())}",
             if (Team.isAllied(Game.playerTank, capturedTank))
                 NewsMessageType.CAPTURE_BAD
             else

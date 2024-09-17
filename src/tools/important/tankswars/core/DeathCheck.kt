@@ -1,14 +1,14 @@
-package tools.important.tankswars.util
+package tools.important.tankswars.core
 
 import tanks.Game
 import tanks.Team
 import tanks.gui.screen.ScreenGame
 import tanks.tank.Tank
 import tanks.tank.TankPlayer
-import tools.important.tankswars.News
-import tools.important.tankswars.NewsMessageType
 import tools.important.tankswars.tank.TankSoldier
 import tools.important.tankswars.building.tank.TankBuilding
+import tools.important.tankswars.util.teamColorText
+import tools.important.tankswars.util.upperFirst
 
 fun deathCheck() {
     if (ScreenGame.finished) return
@@ -42,6 +42,6 @@ fun deathCheck() {
                 NewsMessageType.GOOD_THING_HAPPENED
         )
 
-        if (wasCommander) fuck(team)
+        if (wasCommander) flee(team)
     }
 }

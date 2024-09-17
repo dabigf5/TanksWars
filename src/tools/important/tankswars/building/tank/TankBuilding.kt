@@ -61,7 +61,7 @@ abstract class TankBuilding(name: String, x: Double, y: Double, angle: Double) :
         return false
     }
 
-    fun capture(capturingTank: Tank) {
+    fun capture(capturingTank: Tank?) {
         destroy = false
         health = type.health
 
