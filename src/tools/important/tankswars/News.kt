@@ -1,7 +1,9 @@
 package tools.important.tankswars
 
 import tanks.Drawing
+import tanks.Game
 import tanks.Panel
+import tools.important.tankswars.event.EventNewsMessage
 
 private class NewsMessage(
     val text: String,
@@ -30,6 +32,11 @@ object News {
     fun sendMessage(text: String, type: NewsMessageType) {
         newsMessages.add(NewsMessage(text))
         Drawing.drawing.playSound(type.soundName, type.soundPitch)
+    }
+
+    fun broadcastMessage(text: String, type: NewsMessageType) {
+        sendMessage(text, type)
+        Game.eventsOut.add(EventNewsMessage(text, type))
     }
 
     fun update() {

@@ -1,4 +1,4 @@
-package tools.important.tankswars
+package tools.important.tankswars.tank
 
 import tanks.tank.TankAIControlled
 
