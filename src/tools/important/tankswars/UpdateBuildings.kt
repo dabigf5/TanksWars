@@ -28,9 +28,9 @@ fun drawBuildings() {
 
         // the tank may be a TankRemote, which is why we do this instead of using the class one
         val buildingType = BuildingType.getBuildingTypeFromName(movable) ?: continue
-        val color = teamColorToBuildingColor(movable.team)
+        val (r, g, b) = teamColorToBuildingColor(movable.team)
 
-        drawing.setColor(color.first, color.second, color.third)
+        drawing.setColor(r, g, b)
         drawing.drawText(movable.posX, movable.posY-movable.size, movable.posZ, buildingType.displayName)
 
         buildingType.onDraw?.invoke(movable)
