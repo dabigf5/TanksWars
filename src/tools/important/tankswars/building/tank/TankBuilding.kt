@@ -11,7 +11,9 @@ import tanks.tank.Mine
 import tanks.tank.Tank
 import tanks.tank.TankAIControlled
 import tools.important.tankswars.building.BuildingType
-import tools.important.tankswars.event.EventBuildingWasCaptured
+import tools.important.tankswars.core.News
+import tools.important.tankswars.event.to_client.EventBuildingWasCaptured
+import tools.important.tankswars.util.sendCaptureMessage
 
 /**
  * TankBuilding is the base class of all server-side buildings.
@@ -62,8 +64,11 @@ abstract class TankBuilding(name: String, x: Double, y: Double, angle: Double) :
     }
 
     fun capture(capturingTank: Tank?) {
+        News.sendCaptureMessage(this, capturingTank)
+
         destroy = false
         health = type.health
+        team = capturingTank?.team
 
         val eventsOut = Game.eventsOut
         eventsOut.add(EventTankUpdateHealth(this))
@@ -71,9 +76,6 @@ abstract class TankBuilding(name: String, x: Double, y: Double, angle: Double) :
         for (event in eventsOut)
             if (event is EventTankRemove && event.tank == networkID) eventsOut.remove(event)
 
-        val event = EventBuildingWasCaptured(this, capturingTank)
-        event.execute()
-
-        eventsOut.add(event)
+        eventsOut.add(EventBuildingWasCaptured(this, capturingTank))
     }
 }

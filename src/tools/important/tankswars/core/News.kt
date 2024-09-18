@@ -3,7 +3,7 @@ package tools.important.tankswars.core
 import tanks.Drawing
 import tanks.Game
 import tanks.Panel
-import tools.important.tankswars.event.EventNewsMessage
+import tools.important.tankswars.event.to_client.EventNewsMessage
 
 private class NewsMessage(
     val text: String,

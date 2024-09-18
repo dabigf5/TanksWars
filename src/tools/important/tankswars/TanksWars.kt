@@ -13,7 +13,7 @@ import tools.important.tankswars.core.News
 import tools.important.tankswars.core.deathCheck
 import tools.important.tankswars.core.drawBuildings
 import tools.important.tankswars.core.updateBuildings
-import tools.important.tankswars.event.EventBuildingWasCaptured
+import tools.important.tankswars.event.to_client.EventBuildingWasCaptured
 import tools.important.tankswars.tank.TankFiller
 import tools.important.tankswars.tank.TankSoldier
 import tools.important.tankswars.tank.TankSoldierCaptain
@@ -39,6 +39,10 @@ private fun registerFiller(amount: Int) {
 class TanksWars : Extension("TanksWars") {
     companion object {
         const val EXTENSION_VERSION = "Tanks Wars 0.1.2"
+
+        const val KEEP_OVERLAY_SIZE = Game.tile_size * 7
+
+        val clientsideBuildingProperties: MutableMap<Tank, MutableMap<String, Any>> = mutableMapOf()
     }
 
     override fun setUp() {

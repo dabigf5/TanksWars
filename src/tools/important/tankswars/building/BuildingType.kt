@@ -1,7 +1,9 @@
 package tools.important.tankswars.building
 
+import tanks.Drawing
 import tanks.Game
 import tanks.tank.Tank
+import tools.important.tankswars.TanksWars
 import tools.important.tankswars.building.tank.TankBuilding
 import tools.important.tankswars.building.tank.TankKeep
 import tools.important.tankswars.core.News
@@ -66,6 +68,14 @@ enum class BuildingType(
 
         stationary = true,
         capturable = true,
+
+        onDraw = fun(tank) {
+            val drawing = Drawing.drawing
+
+            val team = tank.team
+            drawing.setColor(team.teamColorR, team.teamColorG, team.teamColorB, 64.0)
+            drawing.fillRect(tank.posX, tank.posY, TanksWars.KEEP_OVERLAY_SIZE, TanksWars.KEEP_OVERLAY_SIZE)
+        }
     )
     ;
     companion object {

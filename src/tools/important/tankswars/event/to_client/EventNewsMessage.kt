@@ -1,4 +1,4 @@
-package tools.important.tankswars.event
+package tools.important.tankswars.event.to_client
 
 import io.netty.buffer.ByteBuf
 import tanks.gui.screen.ScreenPartyLobby
@@ -9,8 +9,9 @@ import tools.important.tankswars.util.readString
 import tools.important.tankswars.util.writeString
 
 /**
- * An event used to send a news message, where both the message and the message type are fully defined.
- * This event, however, is not the only one that sends news messages. Others such as `EventBuildingWasCaptured` will infer
+ * An event used to send a news message to clients, where both the message and the message type are fully defined.
+ * This event, however, is not the only one that sends news messages. Others such as `EventBuildingWasCaptured` will
+ * also send news messages, while inferring
  * some information on the client.
  *
  * @see EventBuildingWasCaptured
