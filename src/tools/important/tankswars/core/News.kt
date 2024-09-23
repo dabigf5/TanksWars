@@ -26,6 +26,11 @@ enum class NewsMessageType(
     CAPTURE_NEUTRAL("rampage.ogg",1f)
 }
 
+/**
+ * The news: a notification system used to alert the player of happenings on the battlefield.
+ *
+ * Messages are represented on the screen by transparent black boxes with text inside.
+ */
 object News {
     private val newsMessages: MutableList<NewsMessage> = mutableListOf()
 

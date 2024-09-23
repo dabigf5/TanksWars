@@ -8,7 +8,7 @@ import tools.important.tankswars.core.News
 import tools.important.tankswars.core.NewsMessageType
 
 fun News.sendCaptureMessage(capturedTank: Tank, capturingTank: Tank?) {
-    val buildingType = BuildingType.getBuildingTypeFromName(capturedTank)!!
+    val buildingType = BuildingType.getBuildingTypeFromName(capturedTank.name)!!
 
     val buildingText = teamColorText(capturedTank.team, buildingType.displayName.formatInternalName())
     val capturerText = teamColorText(capturingTank?.team, capturingTank?.name?.formatInternalName()?:"")

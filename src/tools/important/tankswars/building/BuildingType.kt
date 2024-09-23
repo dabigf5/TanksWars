@@ -1,15 +1,15 @@
 package tools.important.tankswars.building
 
-import tanks.Drawing
 import tanks.Game
 import tanks.tank.Tank
-import tools.important.tankswars.TanksWars
 import tools.important.tankswars.building.tank.TankBuilding
 import tools.important.tankswars.building.tank.TankKeep
+import tools.important.tankswars.building.tank.keepDraw
+import tools.important.tankswars.building.tank.keepUpdate
 import tools.important.tankswars.core.News
 
 /**
- * An enum class whose entries contain shared or client-sided constant information about the buildings.
+ * An enum class whose entries contain shared or client-sided constant metadata and functions associated with buildings.
  */
 enum class BuildingType(
     /**
@@ -57,7 +57,10 @@ enum class BuildingType(
     val capturable: Boolean = false,
 
     val onDraw: ((Tank) -> Unit)? = null,
+    val onUpdate: ((Tank) -> Unit)? = null,
 ) {
+    // this enum does not directly define lambdas in the constructor parameters due to a bug in intellij that makes debugging a pain in the nuts
+    // https://youtrack.jetbrains.com/issue/IDEA-305703/Debugger-Breakpoints-in-lambda-functions-in-enum-constants-constructor-are-ignored
     KEEP(
         displayName = "Keep",
         registryName = "tw_keep",
@@ -69,13 +72,8 @@ enum class BuildingType(
         stationary = true,
         capturable = true,
 
-        onDraw = fun(tank) {
-            val drawing = Drawing.drawing
-
-            val team = tank.team
-            drawing.setColor(team.teamColorR, team.teamColorG, team.teamColorB, 64.0)
-            drawing.fillRect(tank.posX, tank.posY, TanksWars.KEEP_OVERLAY_SIZE, TanksWars.KEEP_OVERLAY_SIZE)
-        }
+        onDraw = keepDraw,
+        onUpdate = keepUpdate
     )
     ;
     companion object {
@@ -88,9 +86,9 @@ enum class BuildingType(
 
             return null
         }
-        fun getBuildingTypeFromName(tank: Tank): BuildingType? {
+        fun getBuildingTypeFromName(name: String): BuildingType? {
             for (tankEntry in Game.registryTank.tankEntries) {
-                if (tankEntry.name == tank.name) {
+                if (tankEntry.name == name) {
                     return getBuildingTypeFromClass(tankEntry.tank)
                 }
             }

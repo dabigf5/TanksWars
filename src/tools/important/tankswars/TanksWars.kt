@@ -40,9 +40,7 @@ class TanksWars : Extension("TanksWars") {
     companion object {
         const val EXTENSION_VERSION = "Tanks Wars 0.1.2"
 
-        const val KEEP_OVERLAY_SIZE = Game.tile_size * 7
-
-        val clientsideBuildingProperties: MutableMap<Tank, MutableMap<String, Any>> = mutableMapOf()
+        val buildingProperties: MutableMap<Tank, MutableMap<String, Any>> = mutableMapOf()
     }
 
     override fun setUp() {
@@ -77,8 +75,8 @@ class TanksWars : Extension("TanksWars") {
         News.update()
         if (!ScreenPartyLobby.isClient) {
             deathCheck()
-            updateBuildings()
         }
+        updateBuildings()
     }
 }
 

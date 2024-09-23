@@ -10,6 +10,7 @@ import tanks.tank.Explosion
 import tanks.tank.Mine
 import tanks.tank.Tank
 import tanks.tank.TankAIControlled
+import tools.important.tankswars.TanksWars
 import tools.important.tankswars.building.BuildingType
 import tools.important.tankswars.core.News
 import tools.important.tankswars.event.to_client.EventBuildingWasCaptured
@@ -18,6 +19,9 @@ import tools.important.tankswars.util.sendCaptureMessage
 /**
  * TankBuilding is the base class of all server-side buildings.
  * As such, it and its subclasses should only contain things that are exclusive to the server.
+ *
+ * However, the exception to this rule is the companion object,
+ * which can contain any constant information related to the building.
  *
  * @see BuildingType
  */
@@ -69,6 +73,9 @@ abstract class TankBuilding(name: String, x: Double, y: Double, angle: Double) :
         destroy = false
         health = type.health
         team = capturingTank?.team
+
+        TanksWars.buildingProperties.putIfAbsent(this, mutableMapOf())
+        TanksWars.buildingProperties[this]!!["timeSinceCapture"] = 0.0
 
         val eventsOut = Game.eventsOut
         eventsOut.add(EventTankUpdateHealth(this))

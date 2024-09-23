@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf
 import tanks.gui.screen.ScreenPartyLobby
 import tanks.network.event.PersonalEvent
 import tanks.tank.Tank
+import tools.important.tankswars.TanksWars
 import tools.important.tankswars.core.News
 import tools.important.tankswars.util.sendCaptureMessage
 
@@ -32,5 +33,9 @@ class EventBuildingWasCaptured(
         if (!ScreenPartyLobby.isClient) return
         News.sendCaptureMessage(capturedTank!!, capturingTank!!)
         capturedTank!!.team = capturingTank!!.team
+
+        TanksWars.buildingProperties.putIfAbsent(capturedTank!!, mutableMapOf())
+        TanksWars.buildingProperties[capturedTank]!!["timeSinceCapture"] = 0.0
+        println("a")
     }
 }
