@@ -11,7 +11,7 @@ fun News.sendCaptureMessage(capturedTank: Tank, capturingTank: Tank?) {
     val buildingType = BuildingType.getBuildingTypeFromName(capturedTank.name)!!
 
     val buildingText = teamColorText(capturedTank.team, buildingType.displayName.formatInternalName())
-    val capturerText = teamColorText(capturingTank?.team, capturingTank?.name?.formatInternalName()?:"")
+    val capturerText = teamColorText(capturingTank?.team, capturingTank?.team?.name?.formatInternalName()?:"No one")
 
     sendMessage(
         "$buildingText was captured by $capturerText",
