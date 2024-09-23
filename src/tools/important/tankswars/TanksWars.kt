@@ -4,6 +4,7 @@ import main.Tanks
 import tanks.Game
 import tanks.Game.registerTank
 import tanks.extension.Extension
+import tanks.gui.screen.Screen
 import tanks.gui.screen.ScreenGame
 import tanks.gui.screen.ScreenPartyLobby
 import tanks.gui.screen.leveleditor.ScreenLevelEditorOverlay
@@ -69,8 +70,9 @@ class TanksWarsExtension : Extension("TanksWars") {
         drawBuildings()
     }
 
+    var lastScreen: Screen? = null
     override fun update() {
-        if (Game.screen !is ScreenGame) TanksWars.buildingProperties.clear()
+        if (Game.screen != lastScreen) TanksWars.buildingProperties.clear()
 
         News.update()
         if (!ScreenPartyLobby.isClient) {
