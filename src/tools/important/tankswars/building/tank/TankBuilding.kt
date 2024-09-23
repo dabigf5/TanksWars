@@ -48,7 +48,7 @@ abstract class TankBuilding(name: String, x: Double, y: Double, angle: Double) :
 
     override fun damage(amount: Double, source: IGameObject?): Boolean {
         val dead = super.damage(amount, source)
-        if (!type.capturable) return dead
+        if (type.captureProperties == null) return dead
 
         if (source !is Movable) return dead
         val sourceTank = when(source) {
@@ -69,6 +69,8 @@ abstract class TankBuilding(name: String, x: Double, y: Double, angle: Double) :
 
     fun capture(capturingTank: Tank?) {
         News.sendCaptureMessage(this, capturingTank)
+
+        type.captureProperties?.onCapture?.invoke(this)
 
         destroy = false
         health = type.health

@@ -20,7 +20,7 @@ fun flee(team: Team) {
         if (movable.team != team) continue
 
         if (movable is TankBuilding) {
-            if (movable.type.capturable) movable.capture(null)
+            if (movable.type.captureProperties != null) movable.capture(null)
         }
 
         if (movable is Explosion) {
