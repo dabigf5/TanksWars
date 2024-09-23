@@ -10,10 +10,7 @@ import tanks.gui.screen.ScreenPartyLobby
 import tanks.gui.screen.leveleditor.ScreenLevelEditorOverlay
 import tanks.tank.Tank
 import tools.important.tankswars.building.BuildingType
-import tools.important.tankswars.core.News
-import tools.important.tankswars.core.deathCheck
-import tools.important.tankswars.core.drawBuildings
-import tools.important.tankswars.core.updateBuildings
+import tools.important.tankswars.core.*
 import tools.important.tankswars.event.to_client.EventBuildingWasCaptured
 import tools.important.tankswars.tank.TankFiller
 import tools.important.tankswars.tank.TankSoldier
@@ -59,6 +56,10 @@ class TanksWarsExtension : Extension("TanksWars") {
         }
     }
 
+    override fun preUpdate() {
+        sharedPreUpdateBuildings()
+    }
+
     override fun draw() {
         News.draw()
 
@@ -67,7 +68,7 @@ class TanksWarsExtension : Extension("TanksWars") {
         if (screen is ScreenGame && screen.paused) return
         if (screen is ScreenLevelEditorOverlay) return
 
-        drawBuildings()
+        sharedDrawBuildings()
     }
 
     var lastScreen: Screen? = null
@@ -78,7 +79,7 @@ class TanksWarsExtension : Extension("TanksWars") {
         if (!ScreenPartyLobby.isClient) {
             deathCheck()
         }
-        updateBuildings()
+        sharedUpdateBuildings()
 
         lastScreen = Game.screen
     }

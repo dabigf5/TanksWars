@@ -5,6 +5,7 @@ import tanks.Game
 import tanks.Panel
 import tanks.tank.Tank
 import tools.important.tankswars.TanksWars
+import tools.important.tankswars.tank.TankSoldierDefender
 
 class TankKeep(name: String, x: Double, y: Double, angle: Double) : TankBuilding(
     name,
@@ -16,9 +17,23 @@ class TankKeep(name: String, x: Double, y: Double, angle: Double) : TankBuilding
         const val KEEP_SQUARE_SIZE = Game.tile_size * 7
         const val MAX_TIME_SINCE_CAPTURE = 150.0
     }
+
+    init {
+        spawnedTankEntries.add(SpawnedTankEntry(TankSoldierDefender("tw_soldierdefender", 0.0, 0.0, 0.0), 1.0))
+
+        spawnedMaxCount = 10
+    }
+
+    override fun capture(capturingTank: Tank?) {
+        super.capture(capturingTank)
+
+        for (defender in spawnedTanks) {
+            defender.destroy = true
+        }
+    }
 }
 
-val keepDraw = fun(tank: Tank) {
+val keepSharedDraw = fun(tank: Tank) {
     val drawing = Drawing.drawing
 
     val team = tank.team
@@ -36,7 +51,7 @@ val keepDraw = fun(tank: Tank) {
     drawing.fillOval(tank.posX, tank.posY, circleSize, circleSize)
 }
 
-val keepUpdate = fun(tank: Tank) {
+val keepSharedUpdate = fun(tank: Tank) {
     val properties = TanksWars.buildingProperties[tank] ?: return
 
     properties["timeSinceCapture"] as Double? ?: return

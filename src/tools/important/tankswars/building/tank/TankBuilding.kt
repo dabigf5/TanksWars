@@ -37,6 +37,7 @@ abstract class TankBuilding(name: String, x: Double, y: Double, angle: Double) :
     ShootAI.none,
 ) {
     val type: BuildingType = BuildingType.getBuildingTypeFromClass(javaClass)!!
+
     init {
         description = type.description
         health = type.health
@@ -51,7 +52,7 @@ abstract class TankBuilding(name: String, x: Double, y: Double, angle: Double) :
         if (type.captureProperties == null) return dead
 
         if (source !is Movable) return dead
-        val sourceTank = when(source) {
+        val sourceTank = when (source) {
             is Bullet -> source.tank
             is Explosion -> source.tank
             is Mine -> source.tank
@@ -67,10 +68,19 @@ abstract class TankBuilding(name: String, x: Double, y: Double, angle: Double) :
         return false
     }
 
-    fun capture(capturingTank: Tank?) {
+    override fun update() {
+        val typeSpawnChance = type.spawnChance
+        if (typeSpawnChance != null) {
+            spawnChance = if (team != null) typeSpawnChance else 0.0
+        }
+
+        super.update()
+    }
+
+    open fun capture(capturingTank: Tank?) {
         News.sendCaptureMessage(this, capturingTank)
 
-        type.captureProperties?.onCapture?.invoke(this)
+        type.captureProperties?.onSharedCapture?.invoke(this)
 
         destroy = false
         health = type.health

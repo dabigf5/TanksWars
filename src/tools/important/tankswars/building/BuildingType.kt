@@ -14,7 +14,7 @@ class CaptureProperties(
      *
      * The parameter is the tank that captured the building.
      */
-    val onCapture: ((Tank) -> Unit)?,
+    val onSharedCapture: ((Tank) -> Unit)?,
 ) {
     companion object {
         val noFunction = CaptureProperties(null)
@@ -69,10 +69,18 @@ enum class BuildingType(
      * @see News
      * @see health
      */
-    val captureProperties: CaptureProperties?,
+    val captureProperties: CaptureProperties? = null,
 
-    val onDraw: ((Tank) -> Unit)? = null,
-    val onUpdate: ((Tank) -> Unit)? = null,
+    /**
+     * A value that defines this building's spawn chance when it currently has a team.
+     *
+     * If the building does not have a team, its spawn chance will be reset to 0.
+     */
+    val spawnChance: Double? = null,
+
+    val onSharedDraw: ((Tank) -> Unit)? = null,
+    val onSharedUpdate: ((Tank) -> Unit)? = null,
+    val onSharedPreUpdate: ((Tank) -> Unit)? = null,
 ) {
     // this enum does not directly define lambdas in the constructor parameters due to a bug in intellij that makes debugging a pain in the nuts
     // https://youtrack.jetbrains.com/issue/IDEA-305703/Debugger-Breakpoints-in-lambda-functions-in-enum-constants-constructor-are-ignored
@@ -86,11 +94,13 @@ enum class BuildingType(
 
         stationary = true,
         captureProperties = CaptureProperties.noFunction,
+        spawnChance = 0.0,
 
-        onDraw = keepDraw,
-        onUpdate = keepUpdate
+        onSharedDraw = keepSharedDraw,
+        onSharedUpdate = keepSharedUpdate
     )
     ;
+
     companion object {
         fun getBuildingTypeFromClass(buildingClass: Class<out Tank>): BuildingType? {
             for (buildingType in BuildingType.entries) {
@@ -101,6 +111,7 @@ enum class BuildingType(
 
             return null
         }
+
         fun getBuildingTypeFromName(name: String): BuildingType? {
             for (tankEntry in Game.registryTank.tankEntries) {
                 if (tankEntry.name == name) {

@@ -2,30 +2,40 @@ package tools.important.tankswars.core
 
 import tanks.Drawing
 import tanks.Game
-import tanks.gui.screen.ScreenPartyLobby
 import tanks.tank.Tank
 import tools.important.tankswars.building.BuildingType
 import tools.important.tankswars.util.teamColorToBuildingColor
 
-fun updateBuildings() {
+fun sharedPreUpdateBuildings() {
     for (movable in Game.movables) {
         if (movable !is Tank) continue
 
         val buildingType = BuildingType.getBuildingTypeFromName(movable.name) ?: continue
 
-        if (!ScreenPartyLobby.isClient) {
-            if (buildingType.stationary) {
-                movable.orientation = 0.0
-                movable.posX = movable.lastPosX
-                movable.posY = movable.lastPosY
-            }
+        if (buildingType.stationary) {
+            movable.vX = 0.0
+            movable.vY = 0.0
+            movable.orientation = 0.0
+
+            movable.posX = movable.lastPosX
+            movable.posY = movable.lastPosY
         }
 
-        buildingType.onUpdate?.invoke(movable)
+        buildingType.onSharedPreUpdate?.invoke(movable)
     }
 }
 
-fun drawBuildings() {
+fun sharedUpdateBuildings() {
+    for (movable in Game.movables) {
+        if (movable !is Tank) continue
+
+        val buildingType = BuildingType.getBuildingTypeFromName(movable.name) ?: continue
+
+        buildingType.onSharedUpdate?.invoke(movable)
+    }
+}
+
+fun sharedDrawBuildings() {
     val drawing = Drawing.drawing!!
     for (movable in Game.movables) {
         if (movable !is Tank) continue
@@ -36,6 +46,6 @@ fun drawBuildings() {
         drawing.setColor(r, g, b)
         drawing.drawText(movable.posX, movable.posY-movable.size, movable.posZ, buildingType.displayName)
 
-        buildingType.onDraw?.invoke(movable)
+        buildingType.onSharedDraw?.invoke(movable)
     }
 }
