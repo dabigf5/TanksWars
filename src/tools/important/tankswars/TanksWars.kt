@@ -79,6 +79,8 @@ class TanksWarsExtension : Extension("TanksWars") {
             deathCheck()
         }
         updateBuildings()
+
+        lastScreen = Game.screen
     }
 }
 
