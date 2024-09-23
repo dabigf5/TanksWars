@@ -35,16 +35,14 @@ private fun registerFiller(amount: Int) {
     }
 }
 
+object TanksWars {
+    const val VERSION = "Tanks Wars 0.1.2"
+    val buildingProperties: MutableMap<Tank, MutableMap<String, Any>> = mutableMapOf()
+}
 
-class TanksWars : Extension("TanksWars") {
-    companion object {
-        const val EXTENSION_VERSION = "Tanks Wars 0.1.2"
-
-        val buildingProperties: MutableMap<Tank, MutableMap<String, Any>> = mutableMapOf()
-    }
-
+class TanksWarsExtension : Extension("TanksWars") {
     override fun setUp() {
-        println("Currently running $EXTENSION_VERSION")
+        println("Currently running ${TanksWars.VERSION}")
 
         registerNetworkEvent(EventBuildingWasCaptured::class.java)
 
@@ -82,5 +80,5 @@ class TanksWars : Extension("TanksWars") {
 
 
 fun main() {
-    Tanks.launchWithExtensions(arrayOf("debug"), arrayOf(TanksWars()), null)
+    Tanks.launchWithExtensions(arrayOf("debug"), arrayOf(TanksWarsExtension()), null)
 }
