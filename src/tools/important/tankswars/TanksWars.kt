@@ -70,6 +70,8 @@ class TanksWarsExtension : Extension("TanksWars") {
     }
 
     override fun update() {
+        if (Game.screen !is ScreenGame) TanksWars.buildingProperties.clear()
+
         News.update()
         if (!ScreenPartyLobby.isClient) {
             deathCheck()
