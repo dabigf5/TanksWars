@@ -3,6 +3,7 @@ package tools.important.tankswars.building.tank
 import tanks.Drawing
 import tanks.Game
 import tanks.Panel
+import tanks.network.event.EventTankRemove
 import tanks.tank.Tank
 import tools.important.tankswars.TanksWars
 import tools.important.tankswars.core.flee
@@ -24,6 +25,8 @@ open class TankKeep(name: String, x: Double, y: Double, angle: Double) : TankBui
         spawnedTankEntries.add(SpawnedTankEntry(TankSoldierDefender("tw_soldierdefender", 0.0, 0.0, 0.0), 1.0))
 
         spawnedMaxCount = 10
+
+        emblem = "emblems/square.png"
     }
 
     override fun capture(capturingTank: Tank?) {
@@ -31,6 +34,7 @@ open class TankKeep(name: String, x: Double, y: Double, angle: Double) : TankBui
 
         for (defender in spawnedTanks) {
             defender.destroy = true
+            Game.eventsOut.add(EventTankRemove(defender, true))
         }
     }
 }
@@ -43,12 +47,18 @@ class TankKeepBase(name: String, x: Double, y: Double, angle: Double) : TankKeep
 ) {
     init {
         spawnedMaxCount = 15
+
+        emblem = "emblems/star.png"
     }
 
     /**
      * Whether or not this keep will cause its team to flee upon being captured.
      */
     var liability = true
+        set(v) {
+            field = v
+            emblem = if (v) "emblems/star.png" else "emblems/square.png"
+        }
 
     override fun capture(capturingTank: Tank?) {
         if (!liability) {

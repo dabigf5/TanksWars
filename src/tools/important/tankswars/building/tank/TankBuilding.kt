@@ -47,6 +47,10 @@ abstract class TankBuilding(name: String, x: Double, y: Double, angle: Double) :
         enableMovement = false
         turretLength = 0.0
         spawnedInitialCount = 0
+
+        emblemR = 255.0
+        emblemG = 255.0
+        emblemB = 255.0
     }
 
     override fun damage(amount: Double, source: IGameObject?): Boolean {

@@ -13,6 +13,8 @@ class TankBarracks(name: String, x: Double, y: Double, angle: Double) : TankBuil
         spawnedTankEntries.add(SpawnedTankEntry(TankSoldier("tw_soldier", 0.0, 0.0, 0.0), 1.0))
 
         spawnedMaxCount = 10
+
+        emblem = "emblems/circle.png"
     }
 
     override fun capture(capturingTank: Tank?) {
