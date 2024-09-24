@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf
 import tanks.gui.screen.ScreenPartyLobby
 import tanks.network.event.PersonalEvent
 import tools.important.tankswars.core.News
+import tools.important.tankswars.util.Color
 import tools.important.tankswars.util.readString
 import tools.important.tankswars.util.sendFleeMessage
 import tools.important.tankswars.util.writeString
@@ -20,7 +21,7 @@ import tools.important.tankswars.util.writeString
  */
 class EventTeamFled(
     var teamName: String? = null,
-    var teamColor: Triple<Double, Double, Double>? = null
+    var teamColor: Color? = null
 ) : PersonalEvent() {
     override fun write(buf: ByteBuf) {
         buf.writeString(teamName!!)
@@ -38,7 +39,7 @@ class EventTeamFled(
         val g = buf.readDouble()
         val b = buf.readDouble()
 
-        teamColor = Triple(r, g, b)
+        teamColor = Color(r, g, b)
     }
 
     override fun execute() {

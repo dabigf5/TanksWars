@@ -3,30 +3,23 @@ package tools.important.tankswars.util
 import tanks.Team
 
 const val RESET_COLOR = "§255255255255"
+val noTeamColor = Color(255.0, 255.0, 255.0)
 
-fun colorText(color: Triple<Double, Double, Double>, text: String): String {
-    return "${colorFormat(color)}$text$RESET_COLOR"
+fun getColorEscape(color: Color): String {
+    return getColorEscape(color.r, color.g, color.b)
 }
-
-fun teamColorText(team: Team?, text: String): String {
-    return "${teamColorFormat(team)}$text$RESET_COLOR"
+fun getColorEscape(r: Double, g: Double, b: Double): String {
+    return getColorEscape(r.toInt(), g.toInt(), b.toInt())
 }
-
-fun teamColorFormat(team: Team?): String {
-    if (team == null) return "§128128128255"
-
-    if (team.enableColor)
-        return colorFormat(team.teamColorR.toInt(), team.teamColorG.toInt(), team.teamColorB.toInt())
-
-    return RESET_COLOR
-}
-
-fun colorFormat(color: Triple<Number, Number, Number>): String {
-    return colorFormat(color.first.toInt(), color.second.toInt(), color.third.toInt())
-}
-
-fun colorFormat(r: Int, g: Int, b: Int): String {
+fun getColorEscape(r: Int, g: Int, b: Int): String {
     return "§%03d%03d%03d255".format(r,g,b)
+}
+
+fun coloredText(color: Color, text: String): String {
+    return "${getColorEscape(color)}$text$RESET_COLOR"
+}
+fun teamColoredText(team: Team?, text: String): String {
+    return coloredText(team?.teamColor ?: noTeamColor, text)
 }
 
 fun String.upperFirst(): String {

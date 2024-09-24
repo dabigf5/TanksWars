@@ -10,8 +10,8 @@ import tools.important.tankswars.core.NewsMessageType
 fun News.sendCaptureMessage(capturedTank: Tank, capturingTank: Tank?) {
     val buildingType = BuildingType.getBuildingTypeFromName(capturedTank.name)!!
 
-    val buildingText = teamColorText(capturedTank.team, buildingType.displayName.formatInternalName())
-    val capturerText = teamColorText(capturingTank?.team, capturingTank?.team?.name?.formatInternalName()?:"No one")
+    val buildingText = teamColoredText(capturedTank.team, buildingType.displayName.formatInternalName())
+    val capturerText = teamColoredText(capturingTank?.team, capturingTank?.team?.name?.formatInternalName()?:"No one")
 
     sendMessage(
         "$buildingText was captured by $capturerText",
@@ -25,9 +25,9 @@ fun News.sendCaptureMessage(capturedTank: Tank, capturingTank: Tank?) {
     )
 }
 
-fun News.sendFleeMessage(teamName: String, teamColor: Triple<Double, Double, Double>) {
+fun News.sendFleeMessage(teamName: String, teamColor: Color) {
     sendMessage(
-        "${colorText(teamColor, teamName.formatInternalName())} fled the battlefield!",
+        "${coloredText(teamColor, teamName.formatInternalName())} fled the battlefield!",
         if (teamName == Game.playerTank.team.name)
             NewsMessageType.BAD_THING_HAPPENED
         else

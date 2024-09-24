@@ -7,7 +7,7 @@ import tanks.tank.Tank
 import tanks.tank.TankPlayer
 import tools.important.tankswars.tank.TankSoldier
 import tools.important.tankswars.building.tank.TankBuilding
-import tools.important.tankswars.util.teamColorText
+import tools.important.tankswars.util.teamColoredText
 import tools.important.tankswars.util.upperFirst
 
 fun deathCheck() {
@@ -28,7 +28,7 @@ fun deathCheck() {
 
         val wasCommander = movable is TankPlayer || movable.name.startsWith("cmd")
 
-        val movableNameFormatted = teamColorText(team, movable.name
+        val movableNameFormatted = teamColoredText(team, movable.name
             .replace('_', ' ')
             .upperFirst()
         )
