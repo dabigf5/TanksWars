@@ -101,7 +101,7 @@ enum class BuildingType(
     ),
     KEEP_BASE(
         displayName = "Base Keep",
-        registryName = "tw_basekeep",
+        registryName = "tw_keepbase",
         description = "A keep that will cause its team to flee if it is captured",
         tankClass = TankKeepBase::class.java,
 
