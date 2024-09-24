@@ -58,7 +58,7 @@ class TankKeepBase(name: String, x: Double, y: Double, angle: Double) : TankKeep
 
         liability = false
 
-        if (team != null) flee(team)
+        if (team != null) flee(team, this)
 
         super.capture(capturingTank)
     }

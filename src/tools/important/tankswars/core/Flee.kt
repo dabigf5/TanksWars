@@ -9,9 +9,10 @@ import tanks.tank.Tank
 import tools.important.tankswars.building.tank.TankBuilding
 import tools.important.tankswars.building.tank.TankKeepBase
 import tools.important.tankswars.event.to_client.EventTeamFled
-import tools.important.tankswars.util.*
+import tools.important.tankswars.util.getTeamColorOrGray
+import tools.important.tankswars.util.sendFleeMessage
 
-fun flee(team: Team) {
+fun flee(team: Team, source: Tank? = null) {
     val color = getTeamColorOrGray(team)
 
     News.sendFleeMessage(team.name, color)
@@ -24,7 +25,7 @@ fun flee(team: Team) {
         if (movable is TankBuilding) {
             if (movable.type.captureProperties != null) {
                 if (movable is TankKeepBase) movable.liability = false
-                movable.silentCapture(null)
+                if (movable != source) movable.silentCapture(null)
             }
 
             continue
