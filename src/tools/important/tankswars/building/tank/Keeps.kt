@@ -71,6 +71,8 @@ val keepSharedDraw = fun(tank: Tank) {
     drawing.setColor(r, g, b, 64.0)
     drawing.fillRect(tank.posX, tank.posY, TankKeep.KEEP_SQUARE_SIZE, TankKeep.KEEP_SQUARE_SIZE)
 
+    if (tank.team == null) return
+
     val properties = TanksWars.buildingProperties[tank] ?: return
     val timeSinceCapture = properties["timeSinceCapture"] as Double? ?: return
 
