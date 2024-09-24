@@ -7,7 +7,7 @@ import tanks.tank.Tank
 import tools.important.tankswars.TanksWars
 import tools.important.tankswars.core.flee
 import tools.important.tankswars.tank.TankSoldierDefender
-import tools.important.tankswars.util.teamColorToBuildingColor
+import tools.important.tankswars.util.getTeamColorOrGray
 
 open class TankKeep(name: String, x: Double, y: Double, angle: Double) : TankBuilding(
     name,
@@ -67,7 +67,7 @@ class TankKeepBase(name: String, x: Double, y: Double, angle: Double) : TankKeep
 val keepSharedDraw = fun(tank: Tank) {
     val drawing = Drawing.drawing
 
-    val (r, g, b) = teamColorToBuildingColor(tank.team)
+    val (r, g, b) = getTeamColorOrGray(tank.team)
     drawing.setColor(r, g, b, 64.0)
     drawing.fillRect(tank.posX, tank.posY, TankKeep.KEEP_SQUARE_SIZE, TankKeep.KEEP_SQUARE_SIZE)
 

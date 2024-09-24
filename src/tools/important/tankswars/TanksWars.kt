@@ -41,6 +41,8 @@ object TanksWars {
     val buildingProperties: MutableMap<Tank, MutableMap<String, Any>> = mutableMapOf()
 }
 
+var lastScreen: Screen? = null
+
 class TanksWarsExtension : Extension("TanksWars") {
     override fun setUp() {
         println("Currently running ${TanksWars.VERSION}")
@@ -77,7 +79,6 @@ class TanksWarsExtension : Extension("TanksWars") {
         sharedDrawBuildings()
     }
 
-    var lastScreen: Screen? = null
     override fun update() {
         if (Game.screen != lastScreen) TanksWars.buildingProperties.clear()
 

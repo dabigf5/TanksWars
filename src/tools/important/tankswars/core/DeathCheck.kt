@@ -5,10 +5,10 @@ import tanks.Team
 import tanks.gui.screen.ScreenGame
 import tanks.tank.Tank
 import tanks.tank.TankPlayer
-import tools.important.tankswars.tank.TankSoldier
 import tools.important.tankswars.building.tank.TankBuilding
+import tools.important.tankswars.tank.TankSoldier
+import tools.important.tankswars.util.formatInternalName
 import tools.important.tankswars.util.teamColoredText
-import tools.important.tankswars.util.upperFirst
 
 fun deathCheck() {
     if (ScreenGame.finished) return
@@ -28,10 +28,7 @@ fun deathCheck() {
 
         val wasCommander = movable is TankPlayer || movable.name.startsWith("cmd")
 
-        val movableNameFormatted = teamColoredText(team, movable.name
-            .replace('_', ' ')
-            .upperFirst()
-        )
+        val movableNameFormatted = teamColoredText(team, movable.name.formatInternalName())
 
         News.sendMessage(
             "$movableNameFormatted has been defeated!",

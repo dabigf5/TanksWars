@@ -3,7 +3,6 @@ package tools.important.tankswars.util
 import tanks.Team
 
 const val RESET_COLOR = "§255255255255"
-val noTeamColor = Color(255.0, 255.0, 255.0)
 
 fun getColorEscape(color: Color): String {
     return getColorEscape(color.r, color.g, color.b)
@@ -19,7 +18,7 @@ fun coloredText(color: Color, text: String): String {
     return "${getColorEscape(color)}$text$RESET_COLOR"
 }
 fun teamColoredText(team: Team?, text: String): String {
-    return coloredText(team?.teamColor ?: noTeamColor, text)
+    return coloredText(getTeamColorOrGray(team), text)
 }
 
 fun String.upperFirst(): String {

@@ -4,7 +4,7 @@ import tanks.Drawing
 import tanks.Game
 import tanks.tank.Tank
 import tools.important.tankswars.building.BuildingType
-import tools.important.tankswars.util.teamColorToBuildingColor
+import tools.important.tankswars.util.getTeamColorOrGray
 
 fun sharedPreUpdateBuildings() {
     for (movable in Game.movables) {
@@ -41,7 +41,7 @@ fun sharedDrawBuildings() {
         if (movable !is Tank) continue
 
         val buildingType = BuildingType.getBuildingTypeFromName(movable.name) ?: continue
-        val (r, g, b) = teamColorToBuildingColor(movable.team)
+        val (r, g, b) = getTeamColorOrGray(movable.team)
 
         drawing.setColor(r, g, b)
         drawing.drawText(movable.posX, movable.posY-movable.size, movable.posZ, buildingType.displayName)

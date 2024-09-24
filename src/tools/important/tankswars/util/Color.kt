@@ -17,12 +17,10 @@ val Color.b
 val Team.teamColor
     get() = Color(teamColorR, teamColorG, teamColorB)
 
+fun getTeamColorOrGray(team: Team?): Color {
+    if (team == null) return Color(128.0, 128.0, 128.0)
 
+    if (!team.enableColor) return Color(255.0, 255.0, 255.0)
 
-fun teamColorToBuildingColor(team: Team?): Color {
-    val r = team?.teamColorR ?: 128.0
-    val g = team?.teamColorG ?: 128.0
-    val b = team?.teamColorB ?: 128.0
-
-    return Triple(r, g, b)
+    return team.teamColor
 }

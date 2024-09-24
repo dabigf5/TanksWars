@@ -4,6 +4,7 @@ import tanks.Drawing
 import tanks.Game
 import tanks.Panel
 import tools.important.tankswars.event.to_client.EventNewsMessage
+import tools.important.tankswars.lastScreen
 
 private class NewsMessage(
     val text: String,
@@ -39,12 +40,18 @@ object News {
         Drawing.drawing.playSound(type.soundName, type.soundPitch)
     }
 
+    @Suppress("Unused") // im going to use this one day intellij shutup
     fun broadcastMessage(text: String, type: NewsMessageType) {
         sendMessage(text, type)
         Game.eventsOut.add(EventNewsMessage(text, type))
     }
 
     fun update() {
+        if (Game.screen != lastScreen) {
+            newsMessages.clear()
+            return
+        }
+
         var i = 0
         while (i < newsMessages.size) {
             val message = newsMessages[i]

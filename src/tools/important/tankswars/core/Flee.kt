@@ -12,9 +12,11 @@ import tools.important.tankswars.event.to_client.EventTeamFled
 import tools.important.tankswars.util.*
 
 fun flee(team: Team) {
-    News.sendFleeMessage(team.name, Triple(team.teamColorR, team.teamColorG, team.teamColorB))
+    val color = getTeamColorOrGray(team)
 
-    Game.eventsOut.add(EventTeamFled(team.name, Triple(team.teamColorR, team.teamColorG, team.teamColorB)))
+    News.sendFleeMessage(team.name, color)
+
+    Game.eventsOut.add(EventTeamFled(team.name, color))
 
     for (movable in Game.movables) {
         if (movable.team != team) continue
@@ -42,7 +44,6 @@ fun flee(team: Team) {
         if (movable is Tank) {
             movable.destroy = true
             Game.eventsOut.add(EventTankRemove(movable, true))
-
             continue
         }
 
