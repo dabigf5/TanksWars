@@ -14,6 +14,7 @@ import tools.important.tankswars.TanksWars
 import tools.important.tankswars.building.BuildingType
 import tools.important.tankswars.core.News
 import tools.important.tankswars.event.to_client.EventBuildingWasCaptured
+import tools.important.tankswars.event.to_client.EventBuildingWasSilentlyCaptured
 import tools.important.tankswars.util.sendCaptureMessage
 
 /**
@@ -77,11 +78,7 @@ abstract class TankBuilding(name: String, x: Double, y: Double, angle: Double) :
         super.update()
     }
 
-    open fun capture(capturingTank: Tank?) {
-        News.sendCaptureMessage(this, capturingTank)
-
-        type.captureProperties?.onSharedCapture?.invoke(this)
-
+    private fun serversideCapture(capturingTank: Tank?) {
         destroy = false
         health = type.health
         team = capturingTank?.team
@@ -94,7 +91,20 @@ abstract class TankBuilding(name: String, x: Double, y: Double, angle: Double) :
 
         for (event in eventsOut)
             if (event is EventTankRemove && event.tank == networkID) eventsOut.remove(event)
+    }
 
+    fun silentCapture(capturingTank: Tank?) {
+        serversideCapture(capturingTank)
+        Game.eventsOut.add(EventBuildingWasSilentlyCaptured(this, capturingTank))
+    }
+
+    open fun capture(capturingTank: Tank?) {
+        News.sendCaptureMessage(this, capturingTank)
+        type.captureProperties?.onSharedCapture?.invoke(this)
+
+        serversideCapture(capturingTank)
+
+        val eventsOut = Game.eventsOut
         eventsOut.add(EventBuildingWasCaptured(this, capturingTank))
     }
 }

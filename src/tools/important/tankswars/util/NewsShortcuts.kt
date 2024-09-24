@@ -24,3 +24,13 @@ fun News.sendCaptureMessage(capturedTank: Tank, capturingTank: Tank?) {
                 NewsMessageType.CAPTURE_NEUTRAL
     )
 }
+
+fun News.sendFleeMessage(teamName: String, teamColor: Triple<Double, Double, Double>) {
+    sendMessage(
+        "${colorText(teamColor, teamName.formatInternalName())} fled the battlefield!",
+        if (teamName == Game.playerTank.team.name)
+            NewsMessageType.BAD_THING_HAPPENED
+        else
+            NewsMessageType.GOOD_THING_HAPPENED
+    )
+}

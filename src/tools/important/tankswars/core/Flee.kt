@@ -2,25 +2,30 @@ package tools.important.tankswars.core
 
 import tanks.Game
 import tanks.Team
+import tanks.network.event.EventTankRemove
 import tanks.tank.Explosion
 import tanks.tank.Mine
+import tanks.tank.Tank
 import tools.important.tankswars.building.tank.TankBuilding
+import tools.important.tankswars.building.tank.TankKeepBase
+import tools.important.tankswars.event.to_client.EventTeamFled
 import tools.important.tankswars.util.*
 
 fun flee(team: Team) {
-    News.sendMessage(
-        "${teamColorText(team, team.name.upperFirst())} fled the battlefield!",
-        if (team == Game.playerTank.team)
-            NewsMessageType.BAD_THING_HAPPENED
-        else
-            NewsMessageType.GOOD_THING_HAPPENED
-    )
+    News.sendFleeMessage(team.name, Triple(team.teamColorR, team.teamColorG, team.teamColorB))
+
+    Game.eventsOut.add(EventTeamFled(team.name, Triple(team.teamColorR, team.teamColorG, team.teamColorB)))
 
     for (movable in Game.movables) {
         if (movable.team != team) continue
 
         if (movable is TankBuilding) {
-            if (movable.type.captureProperties != null) movable.capture(null)
+            if (movable.type.captureProperties != null) {
+                if (movable is TankKeepBase) movable.liability = false
+                movable.silentCapture(null)
+            }
+
+            continue
         }
 
         if (movable is Explosion) {
@@ -31,6 +36,13 @@ fun flee(team: Team) {
         if (movable is Mine) {
             movable.damage = 0.0
             movable.destroy = true
+            continue
+        }
+
+        if (movable is Tank) {
+            movable.destroy = true
+            Game.eventsOut.add(EventTankRemove(movable, true))
+
             continue
         }
 

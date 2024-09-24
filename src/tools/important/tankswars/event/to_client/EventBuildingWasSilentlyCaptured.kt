@@ -5,21 +5,25 @@ import tanks.gui.screen.ScreenPartyLobby
 import tanks.network.event.PersonalEvent
 import tanks.tank.Tank
 import tools.important.tankswars.TanksWars
-import tools.important.tankswars.building.BuildingType
-import tools.important.tankswars.core.News
-import tools.important.tankswars.util.sendCaptureMessage
+import tools.important.tankswars.building.tank.TankKeepBase
 
 /**
  * An event used to signal to clients that a building was captured.
- * This will cause the sending of a news message, the sound effect, and a change of team of the captured building.
+ * Unlike `EventBuildingWasCaptured` this will only cause a change of team of the captured building, and will not
+ * show anything in the news.
+ *
+ * This event is used only when a lot of buildings are being captured at once, such as when a liable `TankKeepBase` is captured.
+ *
+ * @see TankKeepBase
+ * @see EventBuildingWasCaptured
  */
-class EventBuildingWasCaptured(
+class EventBuildingWasSilentlyCaptured(
     var capturedTank: Tank? = null,
     var capturingTank: Tank? = null
 ) : PersonalEvent() {
     override fun write(buf: ByteBuf) {
         buf.writeInt(capturedTank!!.networkID)
-        buf.writeInt(capturingTank!!.networkID)
+        buf.writeInt(capturingTank?.networkID ?: -1)
     }
 
     override fun read(buf: ByteBuf) {
@@ -27,17 +31,13 @@ class EventBuildingWasCaptured(
         val capturingId = buf.readInt()
 
         capturedTank = Tank.idMap[capturedId]
-        capturingTank = Tank.idMap[capturingId]
+        if (capturingId != -1) capturingTank = Tank.idMap[capturingId]
     }
 
     override fun execute() {
         if (!ScreenPartyLobby.isClient) return
-        News.sendCaptureMessage(capturedTank!!, capturingTank!!)
 
-        val type = BuildingType.getBuildingTypeFromName(capturedTank!!.name)!!
-        type.captureProperties?.onSharedCapture?.invoke(capturedTank!!)
-
-        capturedTank!!.team = capturingTank!!.team
+        capturedTank!!.team = capturingTank?.team
 
         TanksWars.buildingProperties.putIfAbsent(capturedTank!!, mutableMapOf())
         TanksWars.buildingProperties[capturedTank]!!["timeSinceCapture"] = 0.0

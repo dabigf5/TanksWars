@@ -98,6 +98,21 @@ enum class BuildingType(
 
         onSharedDraw = keepSharedDraw,
         onSharedUpdate = keepSharedUpdate
+    ),
+    KEEP_BASE(
+        displayName = "Base Keep",
+        registryName = "tw_basekeep",
+        description = "A keep that will cause its team to flee if it is captured",
+        tankClass = TankKeepBase::class.java,
+
+        health = 6.0,
+
+        stationary = true,
+        captureProperties = CaptureProperties.noFunction,
+        spawnChance = 0.0,
+
+        onSharedDraw = keepSharedDraw,
+        onSharedUpdate = keepSharedUpdate
     )
     ;
 

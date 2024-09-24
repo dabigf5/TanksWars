@@ -5,9 +5,11 @@ import tanks.Game
 import tanks.Panel
 import tanks.tank.Tank
 import tools.important.tankswars.TanksWars
+import tools.important.tankswars.core.flee
 import tools.important.tankswars.tank.TankSoldierDefender
+import tools.important.tankswars.util.teamColorToBuildingColor
 
-class TankKeep(name: String, x: Double, y: Double, angle: Double) : TankBuilding(
+open class TankKeep(name: String, x: Double, y: Double, angle: Double) : TankBuilding(
     name,
     x,
     y,
@@ -33,11 +35,40 @@ class TankKeep(name: String, x: Double, y: Double, angle: Double) : TankBuilding
     }
 }
 
+class TankKeepBase(name: String, x: Double, y: Double, angle: Double) : TankKeep(
+    name,
+    x,
+    y,
+    angle,
+) {
+    init {
+        spawnedMaxCount = 15
+    }
+
+    /**
+     * Whether or not this keep will cause its team to flee upon being captured.
+     */
+    var liability = true
+
+    override fun capture(capturingTank: Tank?) {
+        if (!liability) {
+            super.capture(capturingTank)
+            return
+        }
+
+        liability = false
+
+        if (team != null) flee(team)
+
+        super.capture(capturingTank)
+    }
+}
+
 val keepSharedDraw = fun(tank: Tank) {
     val drawing = Drawing.drawing
 
-    val team = tank.team
-    drawing.setColor(team.teamColorR, team.teamColorG, team.teamColorB, 64.0)
+    val (r, g, b) = teamColorToBuildingColor(tank.team)
+    drawing.setColor(r, g, b, 64.0)
     drawing.fillRect(tank.posX, tank.posY, TankKeep.KEEP_SQUARE_SIZE, TankKeep.KEEP_SQUARE_SIZE)
 
     val properties = TanksWars.buildingProperties[tank] ?: return
@@ -47,7 +78,7 @@ val keepSharedDraw = fun(tank: Tank) {
     val circleOpacity = 200.0 - ((timeSinceCapture / TankKeep.MAX_TIME_SINCE_CAPTURE) * 200.0)
 
 
-    drawing.setColor(team.teamColorR, team.teamColorG, team.teamColorB, circleOpacity)
+    drawing.setColor(r, g, b, circleOpacity)
     drawing.fillOval(tank.posX, tank.posY, circleSize, circleSize)
 }
 
