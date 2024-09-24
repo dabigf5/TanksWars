@@ -16,7 +16,7 @@ open class TankKeep(name: String, x: Double, y: Double, angle: Double) : TankBui
     angle,
 ) {
     companion object {
-        const val KEEP_SQUARE_SIZE = Game.tile_size * 7
+        const val KEEP_SQUARE_SIZE = Game.tile_size * 9
         const val MAX_TIME_SINCE_CAPTURE = 150.0
     }
 
