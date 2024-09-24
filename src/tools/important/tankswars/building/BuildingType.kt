@@ -94,7 +94,7 @@ enum class BuildingType(
 
         stationary = true,
         captureProperties = CaptureProperties.noFunction,
-        spawnChance = 0.0,
+        spawnChance = 0.008,
 
         onSharedDraw = keepSharedDraw,
         onSharedUpdate = keepSharedUpdate
@@ -109,7 +109,7 @@ enum class BuildingType(
 
         stationary = true,
         captureProperties = CaptureProperties.noFunction,
-        spawnChance = 0.0,
+        spawnChance = 0.008,
 
         onSharedDraw = keepSharedDraw,
         onSharedUpdate = keepSharedUpdate

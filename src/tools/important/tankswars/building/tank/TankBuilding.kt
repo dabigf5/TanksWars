@@ -46,6 +46,7 @@ abstract class TankBuilding(name: String, x: Double, y: Double, angle: Double) :
 
         enableMovement = false
         turretLength = 0.0
+        spawnedInitialCount = 0
     }
 
     override fun damage(amount: Double, source: IGameObject?): Boolean {
@@ -71,6 +72,7 @@ abstract class TankBuilding(name: String, x: Double, y: Double, angle: Double) :
 
     override fun update() {
         val typeSpawnChance = type.spawnChance
+
         if (typeSpawnChance != null) {
             spawnChance = if (team != null) typeSpawnChance else 0.0
         }
