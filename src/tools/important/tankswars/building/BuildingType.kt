@@ -125,6 +125,18 @@ enum class BuildingType(
         stationary = true,
         captureProperties = CaptureProperties.noFunction,
         spawnChance = 0.02
+    ),
+    OUTPOST(
+        displayName = "Outpost",
+        registryName = "tw_outpost",
+        description = "Small outpost that spawns a few defensive tanks",
+        tankClass = TankOutpost::class.java,
+
+        health = 5.0,
+
+        stationary = true,
+        captureProperties = CaptureProperties.noFunction,
+        spawnChance = 0.06
     )
     ;
 
