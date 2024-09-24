@@ -90,7 +90,7 @@ enum class BuildingType(
         description = "A fortified keep that will spawn defensive tanks",
         tankClass = TankKeep::class.java,
 
-        health = 4.0,
+        health = 8.0,
 
         stationary = true,
         captureProperties = CaptureProperties.noFunction,
@@ -105,7 +105,7 @@ enum class BuildingType(
         description = "A keep that will cause its team to flee if it is captured",
         tankClass = TankKeepBase::class.java,
 
-        health = 6.0,
+        health = 12.0,
 
         stationary = true,
         captureProperties = CaptureProperties.noFunction,
@@ -113,6 +113,18 @@ enum class BuildingType(
 
         onSharedDraw = keepSharedDraw,
         onSharedUpdate = keepSharedUpdate
+    ),
+    BARRACKS(
+        displayName = "Barracks",
+        registryName = "tw_barracks",
+        description = "Barracks that will train and send out offensive soldiers",
+        tankClass = TankBarracks::class.java,
+
+        health = 5.0,
+
+        stationary = true,
+        captureProperties = CaptureProperties.noFunction,
+        spawnChance = 0.02
     )
     ;
 

@@ -69,14 +69,13 @@ class TanksWarsExtension : Extension("TanksWars") {
     }
 
     override fun draw() {
-        News.draw()
-
         // no way to make it draw under the pause menu, this has to be done
         val screen = Game.screen
-        if (screen is ScreenGame && screen.paused) return
-        if (screen is ScreenLevelEditorOverlay) return
+        if (!(screen is ScreenGame && screen.paused || screen is ScreenLevelEditorOverlay)) {
+            sharedDrawBuildings()
+        }
 
-        sharedDrawBuildings()
+        News.draw()
     }
 
     override fun update() {

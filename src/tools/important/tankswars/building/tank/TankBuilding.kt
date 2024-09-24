@@ -36,7 +36,7 @@ abstract class TankBuilding(name: String, x: Double, y: Double, angle: Double) :
     100.0,
     angle,
     ShootAI.none,
-) {
+) { // fixme: some weird bug i can't reproduce with capturable buildings dying on clients
     val type: BuildingType = BuildingType.getBuildingTypeFromClass(javaClass)!!
 
     init {
@@ -82,8 +82,8 @@ abstract class TankBuilding(name: String, x: Double, y: Double, angle: Double) :
 
     private fun serversideCapture(capturingTank: Tank?) {
         destroy = false
-        health = type.health
         team = capturingTank?.team
+        health = if (team != null) type.health else 0.01
 
         TanksWars.buildingProperties.putIfAbsent(this, mutableMapOf())
         TanksWars.buildingProperties[this]!!["timeSinceCapture"] = 0.0

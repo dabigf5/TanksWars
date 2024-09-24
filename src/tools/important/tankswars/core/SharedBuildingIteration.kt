@@ -44,6 +44,7 @@ fun sharedDrawBuildings() {
         val (r, g, b) = getTeamColorOrGray(movable.team)
 
         drawing.setColor(r, g, b)
+        drawing.setFontSize(50.0)
         drawing.drawText(movable.posX, movable.posY-movable.size, movable.posZ, buildingType.displayName)
 
         buildingType.onSharedDraw?.invoke(movable)
