@@ -5,6 +5,7 @@ import tanks.Game
 import tanks.Game.registerTank
 import tanks.extension.Extension
 import tanks.gui.screen.IConditionalOverlayScreen
+import tanks.gui.screen.ILevelPreviewScreen
 import tanks.gui.screen.Screen
 import tanks.gui.screen.ScreenGame
 import tanks.gui.screen.ScreenPartyLobby
@@ -73,8 +74,10 @@ class TanksWarsExtension : Extension("TanksWars") {
         // no way to make it draw under the pause menu, this has to be done
         val screen = Game.screen
         if (!(
-            screen is ScreenGame && screen.paused || screen is ScreenLevelEditorOverlay ||
-                screen is IConditionalOverlayScreen
+            screen is ScreenGame && (screen.paused) ||
+            screen is ScreenLevelEditorOverlay ||
+            screen is IConditionalOverlayScreen ||
+            screen is ILevelPreviewScreen
         )) {
             sharedDrawBuildings()
         }
