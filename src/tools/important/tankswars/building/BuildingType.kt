@@ -137,6 +137,16 @@ enum class BuildingType(
         stationary = true,
         captureProperties = CaptureProperties.noFunction,
         spawnChance = 0.06
+    ),
+    SENTRY(
+        displayName = "Sentry Gun",
+        registryName = "tw_sentry",
+        description = "A sentry gun that will fire at enemy tanks in sight",
+        tankClass = TankSentry::class.java,
+
+        health = 5.0,
+
+        stationary = true,
     )
     ;
 

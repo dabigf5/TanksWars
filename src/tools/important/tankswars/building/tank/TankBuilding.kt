@@ -3,7 +3,9 @@ package tools.important.tankswars.building.tank
 import tanks.Game
 import tanks.IGameObject
 import tanks.Movable
+import tanks.Team
 import tanks.bullet.Bullet
+import tanks.gui.screen.ScreenPartyHost
 import tanks.network.event.EventTankRemove
 import tanks.network.event.EventTankUpdateHealth
 import tanks.tank.Explosion
@@ -15,7 +17,10 @@ import tools.important.tankswars.building.BuildingType
 import tools.important.tankswars.core.News
 import tools.important.tankswars.event.to_client.EventBuildingWasCaptured
 import tools.important.tankswars.event.to_client.EventBuildingWasSilentlyCaptured
+import tools.important.tankswars.event.to_client.EventTankDefeated
+import tools.important.tankswars.util.getTeamColorOrGray
 import tools.important.tankswars.util.sendCaptureMessage
+import tools.important.tankswars.util.sendDestroyMessage
 
 /**
  * TankBuilding is the base class of all server-side buildings.
@@ -53,19 +58,43 @@ abstract class TankBuilding(name: String, x: Double, y: Double, angle: Double) :
         emblemB = 255.0
     }
 
+    private fun destroyed(destroyer: Tank?) {
+        if (ScreenPartyHost.isServer) {
+            for (connection in ScreenPartyHost.server.connections) {
+                val (r, g, b) = getTeamColorOrGray(team)
+                connection.events.add(
+                    EventTankDefeated(
+                        name,
+                        r.toInt(),
+                        g.toInt(),
+                        b.toInt(),
+                        Team.isAllied(this, connection.player.tank)
+                    )
+                )
+            }
+        }
+
+        News.sendDestroyMessage(this, destroyer)
+    }
+
     override fun damage(amount: Double, source: IGameObject?): Boolean {
         val dead = super.damage(amount, source)
-        if (type.captureProperties == null) return dead
 
-        if (source !is Movable) return dead
         val sourceTank = when (source) {
             is Bullet -> source.tank
             is Explosion -> source.tank
             is Mine -> source.tank
             is Tank -> source
 
-            else -> error("WTF is this damage source")
+            else -> null
         }
+
+        if (type.captureProperties == null) {
+            if (dead) destroyed(sourceTank)
+            return dead
+        }
+
+        if (source !is Movable) return dead
 
         if (dead) {
             capture(sourceTank)

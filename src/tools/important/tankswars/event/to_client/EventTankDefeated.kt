@@ -3,7 +3,6 @@ package tools.important.tankswars.event.to_client
 import io.netty.buffer.ByteBuf
 import tanks.gui.screen.ScreenPartyLobby
 import tanks.network.event.PersonalEvent
-import tools.important.tankswars.building.BuildingType
 import tools.important.tankswars.core.News
 import tools.important.tankswars.util.*
 
@@ -39,17 +38,14 @@ class EventTankDefeated(
         if (!ScreenPartyLobby.isClient) return
         val name = name!!
 
-        val type = BuildingType.getBuildingTypeFromName(name)
-        if (type == null) {
-            if (!name.startsWith("tw_")) News.sendDefeatMessage(
-                name,
-                Color(
-                    colorR!!.toDouble(),
-                    colorG!!.toDouble(),
-                    colorB!!.toDouble(),
-                ),
-                allied!!
-            )
-        }
+        News.sendDefeatMessage(
+            name,
+            Color(
+                colorR!!.toDouble(),
+                colorG!!.toDouble(),
+                colorB!!.toDouble(),
+            ),
+            allied!!
+        )
     }
 }

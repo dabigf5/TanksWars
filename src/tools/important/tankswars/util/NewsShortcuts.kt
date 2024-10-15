@@ -25,6 +25,14 @@ fun News.sendCaptureMessage(capturedTank: Tank, capturingTank: Tank?) {
     )
 }
 
+fun News.sendDestroyMessage(tank: Tank, destroyer: Tank?) {
+    sendDestroyMessage(
+        getTeamColorOrGray(tank.team), tank.name,
+        destroyer?.team?.name, getTeamColorOrGray(destroyer?.team),
+        Team.isAllied(tank, destroyer)
+    )
+}
+
 fun News.sendDestroyMessage(
     destroyedColor: Color, destroyedName: String,
     destroyerTeamName: String?, destroyerColor: Color,
