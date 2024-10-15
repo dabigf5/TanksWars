@@ -67,7 +67,7 @@ fun News.sendFleeMessage(teamName: String, teamColor: Color) {
 }
 
 fun News.sendDefeatMessage(tank: Tank) {
-    sendDefeatMessage(tank.name, tank.team.teamColor, Team.isAllied(tank, Game.playerTank))
+    sendDefeatMessage(tank.name, getTeamColorOrGray(tank.team), Team.isAllied(tank, Game.playerTank))
 }
 
 fun News.sendDefeatMessage(name: String, color: Color, allied: Boolean) {
