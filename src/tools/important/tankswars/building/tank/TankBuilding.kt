@@ -98,9 +98,9 @@ abstract class TankBuilding(name: String, x: Double, y: Double, angle: Double) :
             return dead
         }
 
-        if (source !is Movable) return dead
+        if (source !is Movable?) return false
 
-        if (dead) {
+        if (dead || team == null) {
             capture(sourceTank)
         }
 
