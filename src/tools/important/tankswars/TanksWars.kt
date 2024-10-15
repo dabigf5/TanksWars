@@ -34,7 +34,7 @@ private fun registerFiller(amount: Int) {
 }
 
 object TanksWars {
-    const val VERSION = "Tanks Wars 0.1.2"
+    const val VERSION = "Tanks Wars 0.2.1"
     val buildingProperties: MutableMap<Tank, MutableMap<String, Any>> = mutableMapOf()
 }
 
