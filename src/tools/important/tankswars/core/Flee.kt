@@ -26,8 +26,10 @@ fun flee(team: Team, source: Tank? = null) {
             if (movable.type.captureProperties != null) {
                 if (movable is TankKeepBase) movable.liability = false
                 if (movable != source) movable.silentCapture(null)
+                continue
             }
-
+            movable.destroy = true
+            Game.eventsOut.add(EventTankRemove(movable, true))
             continue
         }
 

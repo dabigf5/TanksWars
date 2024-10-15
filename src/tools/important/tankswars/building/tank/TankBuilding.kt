@@ -59,28 +59,26 @@ abstract class TankBuilding(name: String, x: Double, y: Double, angle: Double) :
         emblemB = 255.0
     }
 
-    private fun destroyed(destroyer: Tank?) {
-        if (ScreenPartyHost.isServer) {
-            for (connection in ScreenPartyHost.server.connections) {
-                val (r, g, b) = getTeamColorOrGray(team)
-                val (dr, dg, db) = getTeamColorOrGray(destroyer?.team)
-                connection.events.add(
-                    EventBuildingWasDestroyed(
-                        name,
-                        r.toInt(),
-                        g.toInt(),
-                        b.toInt(),
-                        getTeamNameFromDestroyer(destroyer),
-                        dr.toInt(),
-                        dg.toInt(),
-                        db.toInt(),
-                        Team.isAllied(this, connection.player.tank)
-                    )
-                )
-            }
-        }
-
+    fun sendDestroyMessage(destroyer: Tank?) {
         News.sendDestroyMessage(this, destroyer)
+
+        if (!ScreenPartyHost.isServer) return
+
+        for (connection in ScreenPartyHost.server.connections) {
+            val (r, g, b) = getTeamColorOrGray(team)
+            val (dr, dg, db) = getTeamColorOrGray(destroyer?.team)
+            connection.events.add(EventBuildingWasDestroyed(
+                name,
+                r.toInt(),
+                g.toInt(),
+                b.toInt(),
+                getTeamNameFromDestroyer(destroyer),
+                dr.toInt(),
+                dg.toInt(),
+                db.toInt(),
+                Team.isAllied(this, connection.player.tank)
+            ))
+        }
     }
 
     override fun damage(amount: Double, source: IGameObject?): Boolean {
@@ -96,7 +94,7 @@ abstract class TankBuilding(name: String, x: Double, y: Double, angle: Double) :
         }
 
         if (type.captureProperties == null) {
-            if (dead) destroyed(sourceTank)
+            if (dead) sendDestroyMessage(sourceTank)
             return dead
         }
 
