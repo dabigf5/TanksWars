@@ -45,7 +45,7 @@ fun sharedDrawBuildings() {
 
         drawing.setColor(r, g, b)
         drawing.setFontSize(50.0)
-        drawing.drawText(movable.posX, movable.posY-movable.size, movable.posZ, buildingType.displayName)
+        drawing.drawText(movable.posX, movable.posY-movable.size, buildingType.displayName)
 
         buildingType.onSharedDraw?.invoke(movable)
     }
