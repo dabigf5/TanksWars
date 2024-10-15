@@ -25,10 +25,46 @@ fun News.sendCaptureMessage(capturedTank: Tank, capturingTank: Tank?) {
     )
 }
 
+fun News.sendDestroyMessage(
+    destroyedColor: Color, destroyedName: String,
+    destroyerTeamName: String?, destroyerColor: Color,
+    allied: Boolean
+) {
+    val buildingType = BuildingType.getBuildingTypeFromName(destroyedName)!!
+
+    val buildingText = coloredText(destroyedColor, buildingType.displayName.formatInternalName())
+    val destroyerText = coloredText(destroyerColor, destroyerTeamName?.formatInternalName()?:"No one")
+
+    sendMessage(
+        "$buildingText was destroyed by $destroyerText",
+        if (allied)
+            NewsMessageType.BAD_THING_HAPPENED
+        else
+            NewsMessageType.GOOD_THING_HAPPENED
+    )
+}
+
 fun News.sendFleeMessage(teamName: String, teamColor: Color) {
     sendMessage(
         "${coloredText(teamColor, teamName.formatInternalName())} fled the battlefield!",
         if (teamName == Game.playerTank.team.name)
+            NewsMessageType.BAD_THING_HAPPENED
+        else
+            NewsMessageType.GOOD_THING_HAPPENED
+    )
+}
+
+fun News.sendDefeatMessage(tank: Tank) {
+    sendDefeatMessage(tank.name, tank.team.teamColor, Team.isAllied(tank, Game.playerTank))
+}
+
+fun News.sendDefeatMessage(name: String, color: Color, allied: Boolean) {
+    val formattedName = coloredText(color, name.formatInternalName())
+
+    sendMessage(
+        "$formattedName has been defeated!",
+
+        if (allied)
             NewsMessageType.BAD_THING_HAPPENED
         else
             NewsMessageType.GOOD_THING_HAPPENED

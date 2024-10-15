@@ -23,7 +23,7 @@ class EventBuildingWasSilentlyCaptured(
 ) : PersonalEvent() {
     override fun write(buf: ByteBuf) {
         buf.writeInt(capturedTank!!.networkID)
-        buf.writeInt(capturingTank?.networkID ?: -1)
+        buf.writeInt(capturingTank?.networkID ?: NIL_ID)
     }
 
     override fun read(buf: ByteBuf) {
@@ -31,7 +31,7 @@ class EventBuildingWasSilentlyCaptured(
         val capturingId = buf.readInt()
 
         capturedTank = Tank.idMap[capturedId]
-        if (capturingId != -1) capturingTank = Tank.idMap[capturingId]
+        if (capturingId != NIL_ID) capturingTank = Tank.idMap[capturingId]
     }
 
     override fun execute() {
@@ -41,5 +41,9 @@ class EventBuildingWasSilentlyCaptured(
 
         TanksWars.buildingProperties.putIfAbsent(capturedTank!!, mutableMapOf())
         TanksWars.buildingProperties[capturedTank]!!["timeSinceCapture"] = 0.0
+    }
+
+    companion object {
+        const val NIL_ID = -1234
     }
 }

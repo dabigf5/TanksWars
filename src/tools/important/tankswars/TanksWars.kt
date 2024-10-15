@@ -11,10 +11,7 @@ import tanks.gui.screen.leveleditor.ScreenLevelEditorOverlay
 import tanks.tank.Tank
 import tools.important.tankswars.building.BuildingType
 import tools.important.tankswars.core.*
-import tools.important.tankswars.event.to_client.EventBuildingWasCaptured
-import tools.important.tankswars.event.to_client.EventBuildingWasSilentlyCaptured
-import tools.important.tankswars.event.to_client.EventNewsMessage
-import tools.important.tankswars.event.to_client.EventTeamFled
+import tools.important.tankswars.event.to_client.*
 import tools.important.tankswars.tank.TankFiller
 import tools.important.tankswars.tank.TankSoldier
 import tools.important.tankswars.tank.TankSoldierCaptain
@@ -51,6 +48,7 @@ class TanksWarsExtension : Extension("TanksWars") {
         registerNetworkEvent(EventBuildingWasCaptured::class.java)
         registerNetworkEvent(EventBuildingWasSilentlyCaptured::class.java)
         registerNetworkEvent(EventTeamFled::class.java)
+        registerNetworkEvent(EventTankDefeated::class.java)
 
         registerFiller(3) // skip to page 2
 

@@ -31,7 +31,6 @@ open class TankKeep(name: String, x: Double, y: Double, angle: Double) : TankBui
 
     override fun capture(capturingTank: Tank?) {
         super.capture(capturingTank)
-
         for (defender in spawnedTanks) {
             defender.destroy = true
             Game.eventsOut.add(EventTankRemove(defender, true))

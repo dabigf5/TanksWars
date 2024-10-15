@@ -3,12 +3,15 @@ package tools.important.tankswars.core
 import tanks.Game
 import tanks.Team
 import tanks.gui.screen.ScreenGame
+import tanks.gui.screen.ScreenPartyHost
 import tanks.tank.Tank
-import tanks.tank.TankPlayer
-import tools.important.tankswars.building.tank.TankBuilding
-import tools.important.tankswars.tank.TankSoldier
-import tools.important.tankswars.util.formatInternalName
-import tools.important.tankswars.util.teamColoredText
+import tools.important.tankswars.event.to_client.EventTankDefeated
+import tools.important.tankswars.util.getTeamColorOrGray
+import tools.important.tankswars.util.sendDefeatMessage
+
+fun shouldNotifyDeath(tank: Tank): Boolean {
+    return !tank.name.startsWith("tw_")
+}
 
 fun deathCheck() {
     if (ScreenGame.finished) return
@@ -16,28 +19,33 @@ fun deathCheck() {
     val screen = Game.screen!!
     if (screen is ScreenGame && screen.paused) return
 
-    for (movable in Game.movables) {
-        val team = movable.team ?: continue
+    for (tank in Game.movables) {
+        val team = tank.team ?: continue
+        if (tank !is Tank) continue
+        if (!shouldNotifyDeath(tank)) continue
 
-        if (movable !is Tank) continue
-        if (movable is TankSoldier) continue
-        if (movable is TankBuilding) continue
+        if (!tank.destroy) continue
+        if (tank.destroyTimer > 0.0) continue
 
-        if (!movable.destroy) continue
-        if (movable.destroyTimer > 0.0) continue
+        val wasCommander = tank.name.startsWith("cmd")
 
-        val wasCommander = movable is TankPlayer || movable.name.startsWith("cmd")
+        News.sendDefeatMessage(tank)
 
-        val movableNameFormatted = teamColoredText(team, movable.name.formatInternalName())
+        // this cannot be done with the tank, as its destroy is set to true
+        // which means it's probably already been removed on the client
+        if (ScreenPartyHost.isServer) {
+            for (connection in ScreenPartyHost.server.connections) {
+                val (r, g, b) = getTeamColorOrGray(team)
 
-        News.sendMessage(
-            "$movableNameFormatted has been defeated!",
+                connection.events.add(EventTankDefeated(
+                    tank.name,
 
-            if (Team.isAllied(movable, Game.playerTank))
-                NewsMessageType.BAD_THING_HAPPENED
-            else
-                NewsMessageType.GOOD_THING_HAPPENED
-        )
+                    r.toInt(), g.toInt(), b.toInt(),
+
+                    Team.isAllied(tank, connection.player.tank)
+                ))
+            }
+        }
 
         if (wasCommander) flee(team)
     }
