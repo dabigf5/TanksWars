@@ -141,10 +141,10 @@ enum class BuildingType(
     SENTRY(
         displayName = "Sentry Gun",
         registryName = "tw_sentry",
-        description = "A sentry gun that will fire at enemy tanks in sight",
+        description = "An armored sentry gun that will fire at enemy tanks in sight",
         tankClass = TankSentry::class.java,
 
-        health = 5.0,
+        health = 8.0,
 
         stationary = true,
     )
