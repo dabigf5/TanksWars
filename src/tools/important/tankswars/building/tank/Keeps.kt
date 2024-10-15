@@ -77,7 +77,7 @@ val keepSharedDraw = fun(tank: Tank) {
     val drawing = Drawing.drawing
 
     val (r, g, b) = getTeamColorOrGray(tank.team)
-    drawing.setColor(r, g, b, 64.0)
+    drawing.setColor(r, g, b, 20.0)
     drawing.fillRect(tank.posX, tank.posY, TankKeep.KEEP_SQUARE_SIZE, TankKeep.KEEP_SQUARE_SIZE)
 
     if (tank.team == null) return
