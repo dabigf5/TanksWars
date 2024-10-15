@@ -16,9 +16,10 @@ import tools.important.tankswars.TanksWars
 import tools.important.tankswars.building.BuildingType
 import tools.important.tankswars.core.News
 import tools.important.tankswars.event.to_client.EventBuildingWasCaptured
+import tools.important.tankswars.event.to_client.EventBuildingWasDestroyed
 import tools.important.tankswars.event.to_client.EventBuildingWasSilentlyCaptured
-import tools.important.tankswars.event.to_client.EventTankDefeated
 import tools.important.tankswars.util.getTeamColorOrGray
+import tools.important.tankswars.util.getTeamNameFromDestroyer
 import tools.important.tankswars.util.sendCaptureMessage
 import tools.important.tankswars.util.sendDestroyMessage
 
@@ -62,12 +63,17 @@ abstract class TankBuilding(name: String, x: Double, y: Double, angle: Double) :
         if (ScreenPartyHost.isServer) {
             for (connection in ScreenPartyHost.server.connections) {
                 val (r, g, b) = getTeamColorOrGray(team)
+                val (dr, dg, db) = getTeamColorOrGray(destroyer?.team)
                 connection.events.add(
-                    EventTankDefeated(
+                    EventBuildingWasDestroyed(
                         name,
                         r.toInt(),
                         g.toInt(),
                         b.toInt(),
+                        getTeamNameFromDestroyer(destroyer),
+                        dr.toInt(),
+                        dg.toInt(),
+                        db.toInt(),
                         Team.isAllied(this, connection.player.tank)
                     )
                 )

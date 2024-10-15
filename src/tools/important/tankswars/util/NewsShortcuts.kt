@@ -25,23 +25,27 @@ fun News.sendCaptureMessage(capturedTank: Tank, capturingTank: Tank?) {
     )
 }
 
+fun getTeamNameFromDestroyer(destroyer: Tank?): String {
+    return destroyer?.team?.name ?: destroyer?.name ?: "No one"
+}
+
 fun News.sendDestroyMessage(tank: Tank, destroyer: Tank?) {
     sendDestroyMessage(
         getTeamColorOrGray(tank.team), tank.name,
-        destroyer?.team?.name, getTeamColorOrGray(destroyer?.team),
+        getTeamNameFromDestroyer(destroyer), getTeamColorOrGray(destroyer?.team),
         Team.isAllied(tank, destroyer)
     )
 }
 
 fun News.sendDestroyMessage(
     destroyedColor: Color, destroyedName: String,
-    destroyerTeamName: String?, destroyerColor: Color,
+    destroyerTeamName: String, destroyerColor: Color,
     allied: Boolean
 ) {
     val buildingType = BuildingType.getBuildingTypeFromName(destroyedName)!!
 
     val buildingText = coloredText(destroyedColor, buildingType.displayName.formatInternalName())
-    val destroyerText = coloredText(destroyerColor, destroyerTeamName?.formatInternalName()?:"No one")
+    val destroyerText = coloredText(destroyerColor, destroyerTeamName.formatInternalName())
 
     sendMessage(
         "$buildingText was destroyed by $destroyerText",
