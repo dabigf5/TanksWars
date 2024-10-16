@@ -32,7 +32,8 @@ class TanksWarsExtension : Extension("TanksWars") {
             screen is ScreenGame && (screen.paused) ||
             screen is ScreenLevelEditorOverlay ||
             screen is IConditionalOverlayScreen ||
-            screen is ILevelPreviewScreen
+            screen is ILevelPreviewScreen ||
+            screen is ScreenTankEditor
         )) {
             sharedDrawBuildings()
         }
