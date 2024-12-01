@@ -9,7 +9,7 @@ import tools.important.tankswars.util.*
 /**
  * An event that is sent by the server when a tank is defeated.
  */
-class EventTankDefeated(
+class EventTankDefeatMessage(
     var name: String? = null,
     var colorR: Int? = null,
     var colorG: Int? = null,

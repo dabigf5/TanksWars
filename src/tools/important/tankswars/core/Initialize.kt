@@ -29,7 +29,7 @@ fun initializeTanksWars() {
     registerNetworkEvent(EventBuildingWasCaptured::class.java)
     registerNetworkEvent(EventBuildingWasSilentlyCaptured::class.java)
     registerNetworkEvent(EventTeamFled::class.java)
-    registerNetworkEvent(EventTankDefeated::class.java)
+    registerNetworkEvent(EventTankDefeatMessage::class.java)
     registerNetworkEvent(EventBuildingWasDestroyed::class.java)
 
     registerFiller(3) // skip to page 2

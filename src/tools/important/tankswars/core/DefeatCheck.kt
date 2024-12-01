@@ -1,13 +1,9 @@
 package tools.important.tankswars.core
 
 import tanks.Game
-import tanks.Team
 import tanks.gui.screen.ScreenGame
-import tanks.gui.screen.ScreenPartyHost
 import tanks.tank.Tank
-import tools.important.tankswars.event.to_client.EventTankDefeated
-import tools.important.tankswars.util.getTeamColorOrGray
-import tools.important.tankswars.util.sendDefeatMessage
+import tools.important.tankswars.util.broadcastDefeatMessage
 
 fun shouldNotifyDeath(tank: Tank): Boolean {
     return !tank.name.startsWith("tw_")
@@ -29,23 +25,10 @@ fun deathCheck() {
 
         val wasCommander = tank.name.startsWith("cmd")
 
-        News.sendDefeatMessage(tank)
+        News.broadcastDefeatMessage(tank)
 
         // this cannot be done with the tank, as its destroy is set to true
         // which means it's probably already been removed on the client
-        if (ScreenPartyHost.isServer) {
-            for (connection in ScreenPartyHost.server.connections) {
-                val (r, g, b) = getTeamColorOrGray(team)
-
-                connection.events.add(EventTankDefeated(
-                    tank.name,
-
-                    r.toInt(), g.toInt(), b.toInt(),
-
-                    Team.isAllied(tank, connection.player.tank)
-                ))
-            }
-        }
 
         if (wasCommander) flee(team)
     }

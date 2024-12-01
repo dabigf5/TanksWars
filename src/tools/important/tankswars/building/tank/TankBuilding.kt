@@ -3,9 +3,7 @@ package tools.important.tankswars.building.tank
 import tanks.Game
 import tanks.IGameObject
 import tanks.Movable
-import tanks.Team
 import tanks.bullet.Bullet
-import tanks.gui.screen.ScreenPartyHost
 import tanks.network.event.EventTankRemove
 import tanks.network.event.EventTankUpdateHealth
 import tanks.tank.Explosion
@@ -16,12 +14,10 @@ import tools.important.tankswars.TanksWars
 import tools.important.tankswars.building.BuildingType
 import tools.important.tankswars.core.News
 import tools.important.tankswars.event.to_client.EventBuildingWasCaptured
-import tools.important.tankswars.event.to_client.EventBuildingWasDestroyed
 import tools.important.tankswars.event.to_client.EventBuildingWasSilentlyCaptured
-import tools.important.tankswars.util.getTeamColorOrGray
-import tools.important.tankswars.util.getTeamNameFromDestroyer
+import tools.important.tankswars.util.broadcastDestroyMessage
+import tools.important.tankswars.util.isDeadForReal
 import tools.important.tankswars.util.sendCaptureMessage
-import tools.important.tankswars.util.sendDestroyMessage
 
 /**
  * TankBuilding is the base class of all server-side buildings.
@@ -42,7 +38,8 @@ abstract class TankBuilding(name: String, x: Double, y: Double, angle: Double) :
     100.0,
     angle,
     ShootAI.none,
-) { // fixme: some weird bug i can't reproduce with capturable buildings dying on clients
+) {
+    // fixme: some weird bug i can't reproduce with capturable buildings dying on clients but not the server
     val type: BuildingType = BuildingType.getBuildingTypeFromClass(javaClass)!!
 
     init {
@@ -60,29 +57,13 @@ abstract class TankBuilding(name: String, x: Double, y: Double, angle: Double) :
     }
 
     fun sendDestroyMessage(destroyer: Tank?) {
-        News.sendDestroyMessage(this, destroyer)
-
-        if (!ScreenPartyHost.isServer) return
-
-        for (connection in ScreenPartyHost.server.connections) {
-            val (r, g, b) = getTeamColorOrGray(team)
-            val (dr, dg, db) = getTeamColorOrGray(destroyer?.team)
-            connection.events.add(EventBuildingWasDestroyed(
-                name,
-                r.toInt(),
-                g.toInt(),
-                b.toInt(),
-                getTeamNameFromDestroyer(destroyer),
-                dr.toInt(),
-                dg.toInt(),
-                db.toInt(),
-                Team.isAllied(this, connection.player.tank)
-            ))
-        }
+        News.broadcastDestroyMessage(this, destroyer)
     }
 
     override fun damage(amount: Double, source: IGameObject?): Boolean {
-        val dead = super.damage(amount, source)
+        super.damage(amount, source)
+
+        val deadForReal = isDeadForReal
 
         val sourceTank = when (source) {
             is Bullet -> source.tank
@@ -94,13 +75,18 @@ abstract class TankBuilding(name: String, x: Double, y: Double, angle: Double) :
         }
 
         if (type.captureProperties == null) {
-            if (dead) sendDestroyMessage(sourceTank)
-            return dead
+            if (deadForReal)
+                sendDestroyMessage(sourceTank)
+            return deadForReal
         }
 
-        if (source !is Movable?) return false
+        if (source !is Movable?) {
+            health = type.health
+            destroy = false
+            return false
+        }
 
-        if (dead || team == null) {
+        if (deadForReal || team == null) {
             capture(sourceTank)
         }
 
@@ -118,9 +104,10 @@ abstract class TankBuilding(name: String, x: Double, y: Double, angle: Double) :
     }
 
     private fun serversideCapture(capturingTank: Tank?) {
+        health = type.health
         destroy = false
+
         team = capturingTank?.team
-        health = if (team != null) type.health else 0.01
 
         TanksWars.buildingProperties.putIfAbsent(this, mutableMapOf())
         TanksWars.buildingProperties[this]!!["timeSinceCapture"] = 0.0

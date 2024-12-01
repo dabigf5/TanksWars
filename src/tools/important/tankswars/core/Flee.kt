@@ -8,16 +8,10 @@ import tanks.tank.Mine
 import tanks.tank.Tank
 import tools.important.tankswars.building.tank.TankBuilding
 import tools.important.tankswars.building.tank.TankKeepBase
-import tools.important.tankswars.event.to_client.EventTeamFled
-import tools.important.tankswars.util.getTeamColorOrGray
-import tools.important.tankswars.util.sendFleeMessage
+import tools.important.tankswars.util.broadcastFleeMessage
 
 fun flee(team: Team, source: Tank? = null) {
-    val color = getTeamColorOrGray(team)
-
-    News.sendFleeMessage(team.name, color)
-
-    Game.eventsOut.add(EventTeamFled(team.name, color))
+    News.broadcastFleeMessage(team)
 
     for (movable in Game.movables) {
         if (movable.team != team) continue
