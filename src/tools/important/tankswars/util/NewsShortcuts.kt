@@ -32,7 +32,7 @@ fun News.sendCaptureMessage(capturedTank: Tank, capturingTank: Tank?) {
 }
 
 fun getTeamNameFromDestroyer(destroyer: Tank?): String {
-    return destroyer?.team?.name ?: destroyer?.name ?: "No one"
+    return destroyer?.team?.name?.formatInternalName() ?: destroyer?.name ?: "No one"
 }
 
 fun News.sendDestroyMessage(tank: Tank, destroyer: Tank?) {
