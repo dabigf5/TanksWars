@@ -19,8 +19,10 @@ fun News.sendCaptureMessage(capturedTank: Tank, capturingTank: Tank?) {
     val buildingText = teamColoredText(capturedTank.team, buildingType.displayName.formatInternalName())
     val capturerText = teamColoredText(capturingTank?.team, capturingTank?.team?.name?.formatInternalName() ?: "No one")
 
+    val verbed = if (capturedTank.team == null) "occupied" else "captured"
+
     sendMessage(
-        "$buildingText was captured by $capturerText",
+        "$buildingText was $verbed by $capturerText",
         if (Team.isAllied(Game.playerTank, capturedTank))
             NewsMessageType.CAPTURE_BAD
         else
