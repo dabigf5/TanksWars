@@ -1,3 +1,4 @@
+![Tanks Wars Logo](tankswarslogo.png)
 # Tanks Wars
 An extension for Tanks: The Crusades that adds a variety of buildings to the tank selection, including but not limited to:
 - Keeps (capturable fortresses that spawn defensive soldiers)
