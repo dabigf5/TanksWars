@@ -31,6 +31,7 @@ fun initializeTanksWars() {
     registerNetworkEvent(EventTeamFled::class.java)
     registerNetworkEvent(EventTankDefeatMessage::class.java)
     registerNetworkEvent(EventBuildingWasDestroyed::class.java)
+    registerNetworkEvent(EventTankEmblemUpdate::class.java)
 
     registerFiller(3) // skip to page 2
 

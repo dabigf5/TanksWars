@@ -7,6 +7,7 @@ import tanks.network.event.EventTankRemove
 import tanks.tank.Tank
 import tools.important.tankswars.TanksWars
 import tools.important.tankswars.core.flee
+import tools.important.tankswars.event.to_client.EventTankEmblemUpdate
 import tools.important.tankswars.tank.TankSoldierDefender
 import tools.important.tankswars.util.getTeamColorOrGray
 
@@ -57,7 +58,7 @@ class TankKeepBase(name: String, x: Double, y: Double, angle: Double) : TankKeep
         set(v) {
             field = v
             emblem = if (v) "emblems/star.png" else "emblems/square.png"
-            // TODO: fix bug where multiplayer clients don't recieve this change
+            Game.eventsOut.add(EventTankEmblemUpdate(this, emblem, emblemR, emblemG, emblemB))
         }
 
     override fun capture(capturingTank: Tank?) {
