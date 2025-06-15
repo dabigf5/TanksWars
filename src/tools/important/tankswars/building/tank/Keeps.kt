@@ -57,6 +57,7 @@ class TankKeepBase(name: String, x: Double, y: Double, angle: Double) : TankKeep
         set(v) {
             field = v
             emblem = if (v) "emblems/star.png" else "emblems/square.png"
+            // TODO: fix bug where multiplayer clients don't recieve this change
         }
 
     override fun capture(capturingTank: Tank?) {
