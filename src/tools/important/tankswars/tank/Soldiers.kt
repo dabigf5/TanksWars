@@ -54,7 +54,7 @@ class TankSoldierCaptain(name: String, x: Double, y: Double, angle: Double) : Ta
         colorG = 80.0
         colorB = 80.0
 
-        description = "A powerful captain of offensive soldiers who will lead and coordinate assaults"
+        description = "A slightly stronger captain of offensive soldiers"
         enableMineAvoidance = false
         enableBulletAvoidance = false
         cooldownBase = 500.0
