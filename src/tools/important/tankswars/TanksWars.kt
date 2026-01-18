@@ -36,6 +36,7 @@ class TanksWarsExtension : Extension("TanksWars") {
             screen is ScreenTankEditor
         )) {
             sharedDrawBuildings()
+            CommandingSystem.draw()
         }
 
         News.draw()
@@ -49,6 +50,7 @@ class TanksWarsExtension : Extension("TanksWars") {
             deathCheck()
         }
         sharedUpdateBuildings()
+        CommandingSystem.update()
 
         lastScreen = Game.screen
     }

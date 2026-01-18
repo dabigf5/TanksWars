@@ -1,6 +1,13 @@
 package tools.important.tankswars.tank
 
+import tanks.Movable
 import tanks.tank.TankAIControlled
+
+
+interface TankCommandable {
+    fun setTarget(m: Movable?)
+    fun getTarget(): Movable?
+}
 
 open class TankSoldier(name: String, x: Double, y: Double, angle: Double) : TankAIControlled(name,
     x,
@@ -11,7 +18,9 @@ open class TankSoldier(name: String, x: Double, y: Double, angle: Double) : Tank
     125.0,
     angle,
     ShootAI.straight
-) {
+), TankCommandable {
+    var orderedTarget: Movable? = null
+
     init {
         description = "An offensive soldier who will seek out enemies"
 
@@ -45,6 +54,20 @@ open class TankSoldier(name: String, x: Double, y: Double, angle: Double) : Tank
     override fun update() {
         super.update()
         if (team == null) destroy = true
+    }
+
+    override fun isInterestingPathTarget(m: Movable?): Boolean {
+        if (orderedTarget != null) return m == orderedTarget
+        return super.isInterestingPathTarget(m)
+    }
+
+    override fun setTarget(m: Movable?) {
+        if (path != null) path.clear()
+        orderedTarget = m
+    }
+
+    override fun getTarget(): Movable? {
+        return orderedTarget
     }
 }
 
