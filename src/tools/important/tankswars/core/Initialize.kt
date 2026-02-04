@@ -19,9 +19,7 @@ private fun registerFiller() {
 }
 
 private fun registerFiller(amount: Int) {
-    for (i in 1..amount) {
-        registerFiller()
-    }
+    repeat(amount) { registerFiller() }
 }
 
 fun initializeTanksWars() {
