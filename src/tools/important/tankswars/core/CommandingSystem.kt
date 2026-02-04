@@ -7,38 +7,33 @@ import tanks.Movable
 import tanks.Panel
 import tanks.Team
 import tanks.gui.screen.ScreenGame
+import tanks.gui.screen.ScreenPartyLobby
 import tanks.tank.Tank
+import tools.important.tankswars.event.to_client.EventCommandMessage
+import tools.important.tankswars.event.to_server.EventIssueCommand
 import tools.important.tankswars.tank.TankCommandable
 import kotlin.math.sqrt
 
 class OrderMessage (
-    val message: String,
-    val orderer: Movable,
-    val target: Movable?,
+    val text: String,
+    val orderer: Tank,
+    val visualTarget: Tank?,
     var remainingTime: Double = 50.0,
 )
 
-const val COMMANDING_RADIUS = Game.tile_size * 6.0
+enum class CommandType(
+    val key: Int,
+    val executeServer: (Tank) -> Unit,
+) {
+    ON_ME(GLFW.GLFW_KEY_X, { commander ->
+        CommandingSystem.commandAllNearbyServer(commander, commander)
 
-object CommandingSystem {
-    val recentOrders = mutableListOf<OrderMessage>()
-
-    fun commandAllNearby(target: Movable?) {
-        val player = Game.playerTank
-
-        for (m in Game.movables) {
-            if (m == player) continue
-            if (!Team.isAllied(player, m)) continue
-            if (m !is TankCommandable) {
-                continue
-            }
-            if (Movable.distanceBetween(player, m) < COMMANDING_RADIUS) {
-                m.setTarget(target)
-            }
+        OrderMessage("On me!", commander, null).also { msg ->
+            CommandingSystem.recentOrders.add(msg)
+            Game.eventsOut.add(EventCommandMessage(msg))
         }
-    }
-
-    fun overThere() {
+    }),
+    OVER_THERE(GLFW.GLFW_KEY_C, execute@{ commander ->
         val mX = Drawing.drawing.mouseX
         val mY = Drawing.drawing.mouseY
 
@@ -57,36 +52,51 @@ object CommandingSystem {
                 target = m
             }
         }
+        if (target == null) return@execute
 
-        if (target == null) return
+        OrderMessage("Over there!", commander, target).also { msg ->
+            CommandingSystem.recentOrders.add(msg)
+            Game.eventsOut.add(EventCommandMessage(msg))
+        }
+    }),
+    FORGET_ORDERS(GLFW.GLFW_KEY_V, { commander ->
+        CommandingSystem.commandAllNearbyServer(commander, null)
+        OrderMessage("Forget orders!", commander, null).also { msg ->
+            CommandingSystem.recentOrders.add(msg)
+            Game.eventsOut.add(EventCommandMessage(msg))
+        }
+    }),
+}
 
-        commandAllNearby(target)
-        recentOrders.add(OrderMessage("Over there!", Game.playerTank, target))
-        Drawing.drawing.playSound("join.ogg", 1f, 0.1f)
-    }
+const val COMMANDING_RADIUS = Game.tile_size * 6.0
 
-    fun onMe() {
-        commandAllNearby(Game.playerTank)
-        recentOrders.add(OrderMessage("On me!", Game.playerTank, null))
-    }
+object CommandingSystem {
+    val recentOrders = mutableListOf<OrderMessage>()
 
-    fun forgetOrders() {
-        commandAllNearby(null)
-        recentOrders.add(OrderMessage("Forget orders!", Game.playerTank, null))
+    fun commandAllNearbyServer(commander: Tank, target: Movable?) {
+        for (m in Game.movables) {
+            if (m !is TankCommandable) continue
+            if (m == commander) continue
+            if (!Team.isAllied(commander, m)) continue
+
+            if (Movable.distanceBetween(commander, m) < COMMANDING_RADIUS) {
+                m.setTarget(target)
+            }
+        }
     }
 
     fun update() {
         if (Game.screen !is ScreenGame) return
 
-        if (Game.game.window.validPressedKeys.contains(GLFW.GLFW_KEY_C)) {
-            Game.game.window.validPressedKeys.remove(GLFW.GLFW_KEY_C)
-            overThere()
-        } else if (Game.game.window.validPressedKeys.contains(GLFW.GLFW_KEY_X)) {
-            Game.game.window.validPressedKeys.remove(GLFW.GLFW_KEY_X)
-            onMe()
-        } else if (Game.game.window.validPressedKeys.contains(GLFW.GLFW_KEY_V)) {
-            Game.game.window.validPressedKeys.remove(GLFW.GLFW_KEY_V)
-            forgetOrders()
+        for (commandType: CommandType in CommandType.entries) {
+            if (Game.game.window.validPressedKeys.contains(commandType.key)) {
+                Game.game.window.validPressedKeys.remove(commandType.key)
+                if (ScreenPartyLobby.isClient) {
+                    Game.eventsOut.add(EventIssueCommand(commandType))
+                } else {
+                    commandType.executeServer(Game.playerTank)
+                }
+            }
         }
 
         var i = 0
@@ -108,10 +118,10 @@ object CommandingSystem {
 
             val orderer = order.orderer
             val ordererTeam = order.orderer.team
-            val target = order.target
+            val target = order.visualTarget
 
             Drawing.drawing.setColor(ordererTeam.teamColor.red, ordererTeam.teamColor.green, ordererTeam.teamColor.blue, 255.0 * higherTransparencyMultiplier)
-            Drawing.drawing.drawText(orderer.posX, orderer.posY + COMMANDING_RADIUS/2.0, order.message)
+            Drawing.drawing.drawText(orderer.posX, orderer.posY + COMMANDING_RADIUS/2.0, order.text)
             Drawing.drawing.setColor(ordererTeam.teamColor.red, ordererTeam.teamColor.green, ordererTeam.teamColor.blue, 175.0 * transparencyMultiplier)
             Drawing.drawing.fillOval(orderer.posX, orderer.posY, COMMANDING_RADIUS * 2.0, COMMANDING_RADIUS * 2.0)
 

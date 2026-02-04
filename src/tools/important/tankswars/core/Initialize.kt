@@ -4,6 +4,7 @@ import tanks.Game.registerTank
 import tanks.tank.Tank
 import tools.important.tankswars.building.TwTankType
 import tools.important.tankswars.event.to_client.*
+import tools.important.tankswars.event.to_server.EventIssueCommand
 import tools.important.tankswars.tank.TankFiller
 import tools.important.tankswars.tank.TankSoldierDefender
 import tanks.network.NetworkEventMap.register as registerNetworkEvent
@@ -28,6 +29,8 @@ fun initializeTanksWars() {
     registerNetworkEvent(EventTankDefeatMessage::class.java)
     registerNetworkEvent(EventBuildingWasDestroyed::class.java)
     registerNetworkEvent(EventTankEmblemUpdate::class.java)
+    registerNetworkEvent(EventIssueCommand::class.java)
+    registerNetworkEvent(EventCommandMessage::class.java)
 
     registerFiller(3) // skip to page 2
 
