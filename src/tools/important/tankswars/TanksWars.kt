@@ -9,7 +9,7 @@ import tanks.tank.Tank
 import tools.important.tankswars.core.*
 
 object TanksWars {
-    const val VERSION = "Tanks Wars 0.2.3"
+    const val VERSION = "Tanks Wars 0.3.0"
     val buildingProperties: MutableMap<Tank, MutableMap<String, Any>> = mutableMapOf()
 }
 
