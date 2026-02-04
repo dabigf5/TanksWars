@@ -3,6 +3,7 @@ package tools.important.tankswars.tank
 import basewindow.Color
 import tanks.Movable
 import tanks.tank.TankAIControlled
+import tools.important.tankswars.building.TwTankType
 
 
 interface TankCommandable {
@@ -20,10 +21,11 @@ open class TankSoldier(name: String, x: Double, y: Double, angle: Double) : Tank
     angle,
     ShootAI.straight
 ), TankCommandable {
+    val tankType = TwTankType.getTankTypeFromClass(this::class.java)!!
     var orderedTarget: Movable? = null
 
     init {
-        description = "An offensive soldier who will seek out enemies"
+        description = tankType.description
 
         enableMineLaying = false
         enableTracks = false
@@ -76,7 +78,6 @@ class TankSoldierCaptain(name: String, x: Double, y: Double, angle: Double) : Ta
     init {
         color = Color(80.0, 80.0, 80.0)
 
-        description = "A slightly stronger captain of offensive soldiers"
         enableMineAvoidance = false
         enableBulletAvoidance = false
         cooldownBase = 500.0
@@ -89,8 +90,6 @@ class TankSoldierCaptain(name: String, x: Double, y: Double, angle: Double) : Ta
 
 class TankSoldierDefender(name: String, x: Double, y: Double, angle: Double) : TankSoldier(name, x, y, angle) {
     init {
-        description = "A defensive soldier who will defend the tank that spawned them"
-
         color = Color(60.0, 60.0, 60.0)
 
         enablePathfinding = false

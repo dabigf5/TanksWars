@@ -4,6 +4,9 @@ import tanks.Game
 import tanks.tank.Tank
 import tools.important.tankswars.building.tank.*
 import tools.important.tankswars.core.News
+import tools.important.tankswars.tank.TankSoldier
+import tools.important.tankswars.tank.TankSoldierCaptain
+import tools.important.tankswars.tank.TankSoldierDefender
 
 /**
  * A class defining building capture behavior.
@@ -61,7 +64,7 @@ data class BuildingProperties(
 )
 
 data class SoldierProperties(
-    val commandable: Boolean?
+    val commandable: Boolean
 )
 
 /**
@@ -72,7 +75,7 @@ enum class TwTankType(
      * Building Properties for this tank type, if it is a building.
      * If not null, this tank type is considered a building. If null, this tank type is not considered a building.
      */
-    val buildingProperties: BuildingProperties?,
+    val buildingProperties: BuildingProperties? = null,
 
     /**
      * Soldier Properties for this tank type, if it is a soldier.
@@ -92,9 +95,9 @@ enum class TwTankType(
     val description: String,
 
     /**
-     * The tank class associated with the building type.
+     * The tank class associated with the tank type.
      */
-    val tankClass: Class<out TankBuilding>,
+    val tankClass: Class<out Tank>,
 
     val onSharedDraw: ((Tank) -> Unit)? = null,
     val onSharedUpdate: ((Tank) -> Unit)? = null,
@@ -174,7 +177,34 @@ enum class TwTankType(
         registryName = "tw_sentry",
         description = "An armored sentry gun that will fire at enemy tanks in sight",
         tankClass = TankSentry::class.java,
-    )
+    ),
+
+    SOLDIER(
+        soldierProperties = SoldierProperties(
+            commandable = true,
+        ),
+        tankClass = TankSoldier::class.java,
+        registryName = "tw_soldier",
+        description = "An offensive soldier who will seek out enemies",
+    ),
+
+    SOLDIER_CAPTAIN(
+        soldierProperties = SoldierProperties(
+            commandable = true,
+        ),
+        tankClass = TankSoldierCaptain::class.java,
+        registryName = "tw_soldiercaptain",
+        description = "A slightly stronger captain of offensive soldiers",
+    ),
+
+    DEFENSIVE_SOLDIER(
+        soldierProperties = SoldierProperties(
+            commandable = true,
+        ),
+        tankClass = TankSoldierDefender::class.java,
+        registryName = "tw_soldierdefender",
+        description = "A defensive soldier who will defend the tank that spawned them",
+    ),
     ;
 
     companion object {

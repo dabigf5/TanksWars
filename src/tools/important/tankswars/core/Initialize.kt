@@ -33,13 +33,7 @@ fun initializeTanksWars() {
 
     registerFiller(3) // skip to page 2
 
-    registerTank0W(TankSoldier::class.java, "tw_soldier")
-    registerTank0W(TankSoldierCaptain::class.java, "tw_soldiercaptain")
-    registerTank0W(TankSoldierDefender::class.java, "tw_soldierdefender")
-    registerFiller(10 - 3) // skip to next row
-
     for (buildingType in TwTankType.entries) {
         registerTank0W(buildingType.tankClass, buildingType.registryName)
     }
-    registerFiller(TwTankType.entries.size)
 }

@@ -19,7 +19,7 @@ class TankSentry(name: String, x: Double, y: Double, angle: Double) : TankBuildi
         // todo: figure this out
 //        bullet.effect = Bullet.BulletEffect.fire
         bullet.maxLiveBullets = 0
-        bullet.item.cooldown = 2.5
+        bullet.item?.cooldown = 2.5
 
         enableDefensiveFiring = true
         enablePredictiveFiring = false
