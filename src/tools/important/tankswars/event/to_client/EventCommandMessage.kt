@@ -6,6 +6,7 @@ import tanks.network.event.PersonalEvent
 import tanks.tank.Tank
 import tools.important.tankswars.core.CommandingSystem
 import tools.important.tankswars.core.OrderMessage
+import tools.important.tankswars.event.NIL_ID
 import tools.important.tankswars.util.readString
 import tools.important.tankswars.util.writeString
 
@@ -21,7 +22,7 @@ class EventCommandMessage(
         buf.writeString(message!!.text)
         buf.writeDouble(message!!.remainingTime)
         buf.writeInt(message!!.orderer.networkID)
-        buf.writeInt(message!!.visualTarget?.networkID ?: EventBuildingWasSilentlyCaptured.NIL_ID)
+        buf.writeInt(message!!.visualTarget?.networkID ?: NIL_ID)
     }
 
     override fun read(buf: ByteBuf) {
@@ -30,7 +31,7 @@ class EventCommandMessage(
         val orderer = Tank.idMap[buf.readInt()]!!
 
         val visualTargetId = buf.readInt()
-        val visualTarget = if(visualTargetId != EventBuildingWasSilentlyCaptured.NIL_ID) Tank.idMap[visualTargetId] else null
+        val visualTarget = if(visualTargetId != NIL_ID) Tank.idMap[visualTargetId] else null
 
         message = OrderMessage(
             messageText,

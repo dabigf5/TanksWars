@@ -6,6 +6,7 @@ import tanks.network.event.PersonalEvent
 import tanks.tank.Tank
 import tools.important.tankswars.TanksWars
 import tools.important.tankswars.building.tank.TankKeepBase
+import tools.important.tankswars.event.NIL_ID
 
 /**
  * An event used to signal to clients that a building was captured.
@@ -43,7 +44,4 @@ class EventBuildingWasSilentlyCaptured(
         TanksWars.buildingProperties[capturedTank]!!["timeSinceCapture"] = 0.0
     }
 
-    companion object {
-        const val NIL_ID = -1234
-    }
 }
