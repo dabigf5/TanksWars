@@ -54,6 +54,8 @@ enum class CommandType(
         }
         if (target == null) return@execute
 
+        CommandingSystem.commandAllNearbyServer(commander, target)
+
         OrderMessage("Over there!", commander, target).also { msg ->
             CommandingSystem.recentOrders.add(msg)
             Game.eventsOut.add(EventCommandMessage(msg))
