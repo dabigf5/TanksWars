@@ -1,5 +1,6 @@
 package tools.important.tankswars.building.tank
 
+import basewindow.Color
 import tanks.Game
 import tanks.GameObject
 import tanks.Movable
@@ -52,7 +53,7 @@ abstract class TankBuilding(name: String, x: Double, y: Double, angle: Double) :
         turretLength = 0.0
         spawnedInitialCount = 0
 
-        emblemColor = basewindow.Color()
+        emblemColor = Color(255.0, 255.0, 255.0)
     }
 
     fun sendDestroyMessage(destroyer: Tank?) {

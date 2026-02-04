@@ -31,6 +31,5 @@ class TankSentry(name: String, x: Double, y: Double, angle: Double) : TankBuildi
         cooldownRandom = 0.0
 
         emblem = "emblems/angry.png"
-        emblemColor = basewindow.Color(255.0, 255.0, 255.0)
     }
 }
