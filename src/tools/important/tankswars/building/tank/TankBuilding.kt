@@ -40,9 +40,11 @@ abstract class TankBuilding(name: String, x: Double, y: Double, angle: Double) :
     angle,
     ShootAI.none,
 ) {
-
     // fixme: some weird bug i can't reproduce with capturable buildings dying on clients but not the server
     val type: TwTankType = TwTankType.getTankTypeFromClass(javaClass)!!
+
+    val startPosX = posX
+    val startPosY = posY
 
     init {
         description = type.description

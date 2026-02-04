@@ -33,7 +33,7 @@ data class BuildingProperties(
     /**
      * Whether or not this building is immovable.
      */
-    val stationary: Boolean = false,
+    val stationary: Boolean,
 
     /**
      * The health value that is assigned to instances when spawned, and when captured.
