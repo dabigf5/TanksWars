@@ -1,7 +1,7 @@
 package tools.important.tankswars.building.tank
 
 import tanks.Game
-import tanks.IGameObject
+import tanks.GameObject
 import tanks.Movable
 import tanks.bullet.Bullet
 import tanks.network.event.EventTankRemove
@@ -11,7 +11,7 @@ import tanks.tank.Mine
 import tanks.tank.Tank
 import tanks.tank.TankAIControlled
 import tools.important.tankswars.TanksWars
-import tools.important.tankswars.building.BuildingType
+import tools.important.tankswars.building.TwTankType
 import tools.important.tankswars.core.News
 import tools.important.tankswars.event.to_client.EventBuildingWasCaptured
 import tools.important.tankswars.event.to_client.EventBuildingWasSilentlyCaptured
@@ -26,7 +26,7 @@ import tools.important.tankswars.util.sendCaptureMessage
  * However, the exception to this rule is the companion object,
  * which can contain any constant information related to the building.
  *
- * @see BuildingType
+ * @see TwTankType
  */
 abstract class TankBuilding(name: String, x: Double, y: Double, angle: Double) : TankAIControlled(
     name,
@@ -39,28 +39,27 @@ abstract class TankBuilding(name: String, x: Double, y: Double, angle: Double) :
     angle,
     ShootAI.none,
 ) {
+
     // fixme: some weird bug i can't reproduce with capturable buildings dying on clients but not the server
-    val type: BuildingType = BuildingType.getBuildingTypeFromClass(javaClass)!!
+    val type: TwTankType = TwTankType.getTankTypeFromClass(javaClass)!!
 
     init {
         description = type.description
-        health = type.health
+        health = type.buildingProperties!!.health
         enableMineLaying = false
 
         enableMovement = false
         turretLength = 0.0
         spawnedInitialCount = 0
 
-        emblemR = 255.0
-        emblemG = 255.0
-        emblemB = 255.0
+        emblemColor = basewindow.Color()
     }
 
     fun sendDestroyMessage(destroyer: Tank?) {
         News.broadcastDestroyMessage(this, destroyer)
     }
 
-    override fun damage(amount: Double, source: IGameObject?): Boolean {
+    override fun damage(amount: Double, source: GameObject?): Boolean {
         super.damage(amount, source)
 
         val deadForReal = isDeadForReal
@@ -74,14 +73,14 @@ abstract class TankBuilding(name: String, x: Double, y: Double, angle: Double) :
             else -> null
         }
 
-        if (type.captureProperties == null) {
+        if (type.buildingProperties!!.captureProperties == null) {
             if (deadForReal)
                 sendDestroyMessage(sourceTank)
             return deadForReal
         }
 
         if (source !is Movable?) {
-            health = type.health
+            health = type.buildingProperties.health
             destroy = false
             return false
         }
@@ -94,7 +93,7 @@ abstract class TankBuilding(name: String, x: Double, y: Double, angle: Double) :
     }
 
     override fun update() {
-        val typeSpawnChance = type.spawnChance
+        val typeSpawnChance = type.buildingProperties!!.spawnChance
 
         if (typeSpawnChance != null) {
             spawnChance = if (team != null) typeSpawnChance else 0.0
@@ -104,7 +103,7 @@ abstract class TankBuilding(name: String, x: Double, y: Double, angle: Double) :
     }
 
     private fun serversideCapture(capturingTank: Tank?) {
-        health = type.health
+        health = type.buildingProperties!!.health
         destroy = false
 
         team = capturingTank?.team
@@ -126,7 +125,7 @@ abstract class TankBuilding(name: String, x: Double, y: Double, angle: Double) :
 
     open fun capture(capturingTank: Tank?) {
         News.sendCaptureMessage(this, capturingTank)
-        type.captureProperties?.onSharedCapture?.invoke(this)
+        type.buildingProperties!!.captureProperties?.onSharedCapture?.invoke(this)
 
         serversideCapture(capturingTank)
 

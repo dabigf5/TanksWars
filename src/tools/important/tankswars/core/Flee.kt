@@ -17,7 +17,7 @@ fun flee(team: Team, source: Tank? = null) {
         if (movable.team != team) continue
 
         if (movable is TankBuilding) {
-            if (movable.type.captureProperties != null) {
+            if (movable.type.buildingProperties!!.captureProperties != null) {
                 if (movable is TankKeepBase) movable.liability = false
                 if (movable != source) movable.silentCapture(null)
                 continue
@@ -33,7 +33,7 @@ fun flee(team: Team, source: Tank? = null) {
         }
 
         if (movable is Mine) {
-            movable.damage = 0.0
+            movable.explosion.damage = 0.0
             movable.destroy = true
             continue
         }

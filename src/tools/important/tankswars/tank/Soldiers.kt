@@ -1,5 +1,6 @@
 package tools.important.tankswars.tank
 
+import basewindow.Color
 import tanks.Movable
 import tanks.tank.TankAIControlled
 
@@ -73,9 +74,7 @@ open class TankSoldier(name: String, x: Double, y: Double, angle: Double) : Tank
 
 class TankSoldierCaptain(name: String, x: Double, y: Double, angle: Double) : TankSoldier(name, x, y, angle) {
     init {
-        colorR = 80.0
-        colorG = 80.0
-        colorB = 80.0
+        color = Color(80.0, 80.0, 80.0)
 
         description = "A slightly stronger captain of offensive soldiers"
         enableMineAvoidance = false
@@ -92,9 +91,7 @@ class TankSoldierDefender(name: String, x: Double, y: Double, angle: Double) : T
     init {
         description = "A defensive soldier who will defend the tank that spawned them"
 
-        colorR = 60.0
-        colorG = 60.0
-        colorB = 60.0
+        color = Color(60.0, 60.0, 60.0)
 
         enablePathfinding = false
         seekChance = 0.0

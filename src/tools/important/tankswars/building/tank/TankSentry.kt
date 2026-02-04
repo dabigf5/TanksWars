@@ -1,7 +1,5 @@
 package tools.important.tankswars.building.tank
 
-import tanks.bullet.Bullet
-
 class TankSentry(name: String, x: Double, y: Double, angle: Double) : TankBuilding(
     name,
     x,
@@ -18,9 +16,10 @@ class TankSentry(name: String, x: Double, y: Double, angle: Double) : TankBuildi
         bullet.speed = 12.0
         bullet.size = 5.0
         bullet.damage = 0.04
-        bullet.effect = Bullet.BulletEffect.fire
+        // todo: figure this out
+//        bullet.effect = Bullet.BulletEffect.fire
         bullet.maxLiveBullets = 0
-        bullet.cooldownBase = 2.5
+        bullet.item.cooldown = 2.5
 
         enableDefensiveFiring = true
         enablePredictiveFiring = false
@@ -32,8 +31,6 @@ class TankSentry(name: String, x: Double, y: Double, angle: Double) : TankBuildi
         cooldownRandom = 0.0
 
         emblem = "emblems/angry.png"
-        emblemR = 255.0
-        emblemG = 255.0
-        emblemB = 255.0
+        emblemColor = basewindow.Color(255.0, 255.0, 255.0)
     }
 }

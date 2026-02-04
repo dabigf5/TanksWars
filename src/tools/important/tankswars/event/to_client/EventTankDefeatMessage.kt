@@ -1,5 +1,6 @@
 package tools.important.tankswars.event.to_client
 
+import basewindow.Color
 import io.netty.buffer.ByteBuf
 import tanks.gui.screen.ScreenPartyLobby
 import tanks.network.event.PersonalEvent

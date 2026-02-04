@@ -110,14 +110,14 @@ object CommandingSystem {
             val ordererTeam = order.orderer.team
             val target = order.target
 
-            Drawing.drawing.setColor(ordererTeam.teamColorR, ordererTeam.teamColorG, ordererTeam.teamColorB, 255.0 * higherTransparencyMultiplier)
+            Drawing.drawing.setColor(ordererTeam.teamColor.red, ordererTeam.teamColor.green, ordererTeam.teamColor.blue, 255.0 * higherTransparencyMultiplier)
             Drawing.drawing.drawText(orderer.posX, orderer.posY + COMMANDING_RADIUS/2.0, order.message)
-            Drawing.drawing.setColor(ordererTeam.teamColorR, ordererTeam.teamColorG, ordererTeam.teamColorB, 175.0 * transparencyMultiplier)
+            Drawing.drawing.setColor(ordererTeam.teamColor.red, ordererTeam.teamColor.green, ordererTeam.teamColor.blue, 175.0 * transparencyMultiplier)
             Drawing.drawing.fillOval(orderer.posX, orderer.posY, COMMANDING_RADIUS * 2.0, COMMANDING_RADIUS * 2.0)
 
             if (target != null) {
                 val targetTeam = target.team
-                Drawing.drawing.setColor(targetTeam.teamColorR, targetTeam.teamColorG, targetTeam.teamColorB, 150.0 * transparencyMultiplier)
+                Drawing.drawing.setColor(targetTeam.teamColor.red, targetTeam.teamColor.green, targetTeam.teamColor.blue, 150.0 * transparencyMultiplier)
                 Drawing.drawing.fillOval(target.posX, target.posY, COMMANDING_RADIUS/2.0, COMMANDING_RADIUS/2.0)
             }
         }

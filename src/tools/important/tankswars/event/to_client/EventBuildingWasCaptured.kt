@@ -5,7 +5,7 @@ import tanks.gui.screen.ScreenPartyLobby
 import tanks.network.event.PersonalEvent
 import tanks.tank.Tank
 import tools.important.tankswars.TanksWars
-import tools.important.tankswars.building.BuildingType
+import tools.important.tankswars.building.TwTankType
 import tools.important.tankswars.core.News
 import tools.important.tankswars.util.sendCaptureMessage
 
@@ -34,8 +34,8 @@ class EventBuildingWasCaptured(
         if (!ScreenPartyLobby.isClient) return
         News.sendCaptureMessage(capturedTank!!, capturingTank!!)
 
-        val type = BuildingType.getBuildingTypeFromName(capturedTank!!.name)!!
-        type.captureProperties?.onSharedCapture?.invoke(capturedTank!!)
+        val type = TwTankType.getTankTypeFromName(capturedTank!!.name)!!
+        type.buildingProperties?.captureProperties?.onSharedCapture?.invoke(capturedTank!!)
 
         capturedTank!!.team = capturingTank!!.team
 

@@ -1,11 +1,12 @@
 package tools.important.tankswars.util
 
+import basewindow.Color
 import tanks.Team
 
 const val RESET_COLOR = "§255255255255"
 
 fun getColorEscape(color: Color): String {
-    return getColorEscape(color.r, color.g, color.b)
+    return getColorEscape(color.red, color.green, color.blue)
 }
 fun getColorEscape(r: Double, g: Double, b: Double): String {
     return getColorEscape(r.toInt(), g.toInt(), b.toInt())

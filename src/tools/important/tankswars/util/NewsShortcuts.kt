@@ -1,12 +1,13 @@
 package tools.important.tankswars.util
 
+import basewindow.Color
 import tanks.Game
 import tanks.Team
 import tanks.gui.screen.ScreenPartyHost
 import tanks.tank.Tank
 import tanks.tank.TankPlayer
 import tanks.tank.TankPlayerRemote
-import tools.important.tankswars.building.BuildingType
+import tools.important.tankswars.building.TwTankType
 import tools.important.tankswars.core.News
 import tools.important.tankswars.core.NewsMessageType
 import tools.important.tankswars.event.to_client.EventBuildingWasDestroyed
@@ -14,9 +15,9 @@ import tools.important.tankswars.event.to_client.EventTankDefeatMessage
 import tools.important.tankswars.event.to_client.EventTeamFled
 
 fun News.sendCaptureMessage(capturedTank: Tank, capturingTank: Tank?) {
-    val buildingType = BuildingType.getBuildingTypeFromName(capturedTank.name)!!
+    val twTankType = TwTankType.getTankTypeFromName(capturedTank.name)!!
 
-    val buildingText = teamColoredText(capturedTank.team, buildingType.displayName.formatInternalName())
+    val buildingText = teamColoredText(capturedTank.team, twTankType.buildingProperties!!.displayName.formatInternalName())
     val capturerText = teamColoredText(capturingTank?.team, capturingTank?.team?.name?.formatInternalName() ?: "No one")
 
     val verbed = if (capturedTank.team == null) "occupied" else "captured"
@@ -50,9 +51,9 @@ fun News.sendDestroyMessage(
     destroyerTeamName: String, destroyerColor: Color,
     allied: Boolean
 ) {
-    val buildingType = BuildingType.getBuildingTypeFromName(destroyedName)!!
+    val twTankType = TwTankType.getTankTypeFromName(destroyedName)!!
 
-    val buildingText = coloredText(destroyedColor, buildingType.displayName)
+    val buildingText = coloredText(destroyedColor, twTankType.buildingProperties!!.displayName)
     val destroyerText = coloredText(destroyerColor, destroyerTeamName)
 
     sendMessage(
@@ -105,13 +106,11 @@ fun News.broadcastDefeatMessage(tank: Tank) {
     for (connection in ScreenPartyHost.server.connections) {
         val (r, g, b) = getTeamColorOrGray(tank.team)
 
-        connection.events.add(
-            EventTankDefeatMessage(
+        connection.queueEvent(EventTankDefeatMessage(
                 broadcastName,
                 r.toInt(), g.toInt(), b.toInt(),
                 Team.isAllied(tank, connection.player.tank)
-            )
-        )
+        ))
     }
 }
 
@@ -132,18 +131,16 @@ fun News.broadcastDestroyMessage(tank: Tank, destroyer: Tank?) {
     for (connection in ScreenPartyHost.server.connections) {
         val (r, g, b) = getTeamColorOrGray(tank.team)
         val (dr, dg, db) = getTeamColorOrGray(destroyer?.team)
-        connection.events.add(
-            EventBuildingWasDestroyed(
-                tank.name,
-                r.toInt(),
-                g.toInt(),
-                b.toInt(),
-                getTeamNameFromDestroyer(destroyer),
-                dr.toInt(),
-                dg.toInt(),
-                db.toInt(),
-                Team.isAllied(tank, connection.player.tank)
-            )
-        )
+        connection.queueEvent(EventBuildingWasDestroyed(
+            tank.name,
+            r.toInt(),
+            g.toInt(),
+            b.toInt(),
+            getTeamNameFromDestroyer(destroyer),
+            dr.toInt(),
+            dg.toInt(),
+            db.toInt(),
+            Team.isAllied(tank, connection.player.tank)
+        ))
     }
 }

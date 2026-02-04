@@ -9,6 +9,9 @@ import tools.important.tankswars.TanksWars
 import tools.important.tankswars.core.flee
 import tools.important.tankswars.event.to_client.EventTankEmblemUpdate
 import tools.important.tankswars.tank.TankSoldierDefender
+import tools.important.tankswars.util.component1
+import tools.important.tankswars.util.component2
+import tools.important.tankswars.util.component3
 import tools.important.tankswars.util.getTeamColorOrGray
 
 open class TankKeep(name: String, x: Double, y: Double, angle: Double) : TankBuilding(
@@ -58,7 +61,7 @@ class TankKeepBase(name: String, x: Double, y: Double, angle: Double) : TankKeep
         set(v) {
             field = v
             emblem = if (v) "emblems/star.png" else "emblems/square.png"
-            Game.eventsOut.add(EventTankEmblemUpdate(this, emblem, emblemR, emblemG, emblemB))
+            Game.eventsOut.add(EventTankEmblemUpdate(this, emblem, emblemColor.red, emblemColor.green, emblemColor.blue))
         }
 
     override fun capture(capturingTank: Tank?) {

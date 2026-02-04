@@ -8,7 +8,7 @@ import tools.important.tankswars.core.News
 /**
  * A class defining building capture behavior.
  */
-class CaptureProperties(
+data class CaptureProperties(
     /**
      * Invoked when the building is captured, before its team is changed.
      *
@@ -21,30 +21,11 @@ class CaptureProperties(
     }
 }
 
-
-/**
- * An enum class whose entries contain shared or client-sided constant metadata and functions associated with buildings.
- */
-enum class BuildingType(
+data class BuildingProperties(
     /**
      * The name displayed ingame above the building.
      */
     val displayName: String,
-
-    /**
-     * The name the tankClass is registered with when the extension's setUp is called.
-     */
-    val registryName: String,
-
-    /**
-     * The description that will be assigned to instances on creation
-     */
-    val description: String,
-
-    /**
-     * The tank class associated with the building type.
-     */
-    val tankClass: Class<out TankBuilding>,
 
     /**
      * Whether or not this building is immovable.
@@ -77,6 +58,43 @@ enum class BuildingType(
      * If the building does not have a team, its spawn chance will be reset to 0.
      */
     val spawnChance: Double? = null,
+)
+
+data class SoldierProperties(
+    val commandable: Boolean?
+)
+
+/**
+ * An enum class whose entries contain shared or client-sided constant metadata and functions associated with buildings.
+ */
+enum class TwTankType(
+    /**
+     * Building Properties for this tank type, if it is a building.
+     * If not null, this tank type is considered a building. If null, this tank type is not considered a building.
+     */
+    val buildingProperties: BuildingProperties?,
+
+    /**
+     * Soldier Properties for this tank type, if it is a soldier.
+     * If not null, this tank type is considered a soldier. If null, this tank type is not considered a soldier.
+     * This should not be non-null at the same time BuildingProperties is non-null.
+     */
+    val soldierProperties: SoldierProperties? = null,
+
+    /**
+     * The name the tankClass is registered with when the extension's setUp is called.
+     */
+    val registryName: String,
+
+    /**
+     * The description that will be assigned to instances on creation
+     */
+    val description: String,
+
+    /**
+     * The tank class associated with the building type.
+     */
+    val tankClass: Class<out TankBuilding>,
 
     val onSharedDraw: ((Tank) -> Unit)? = null,
     val onSharedUpdate: ((Tank) -> Unit)? = null,
@@ -85,75 +103,84 @@ enum class BuildingType(
     // this enum does not directly define lambdas in the constructor parameters due to a bug in intellij that makes debugging a pain in the nuts
     // https://youtrack.jetbrains.com/issue/IDEA-305703/Debugger-Breakpoints-in-lambda-functions-in-enum-constants-constructor-are-ignored
     KEEP(
-        displayName = "Keep",
+        buildingProperties = BuildingProperties(
+            displayName = "Keep",
+            health = 8.0,
+            stationary = true,
+            captureProperties = CaptureProperties.noFunction,
+            spawnChance = 0.008,
+        ),
+
         registryName = "tw_keep",
         description = "A fortified keep that will spawn defensive tanks",
         tankClass = TankKeep::class.java,
-
-        health = 8.0,
-
-        stationary = true,
-        captureProperties = CaptureProperties.noFunction,
-        spawnChance = 0.008,
 
         onSharedDraw = keepSharedDraw,
         onSharedUpdate = keepSharedUpdate
     ),
     KEEP_BASE(
-        displayName = "Base Keep",
+        buildingProperties = BuildingProperties(
+            displayName = "Base Keep",
+            health = 12.0,
+
+            stationary = true,
+            captureProperties = CaptureProperties.noFunction,
+            spawnChance = 0.008,
+        ),
+
         registryName = "tw_keepbase",
         description = "A keep that will cause its team to flee if it is captured",
         tankClass = TankKeepBase::class.java,
-
-        health = 12.0,
-
-        stationary = true,
-        captureProperties = CaptureProperties.noFunction,
-        spawnChance = 0.008,
 
         onSharedDraw = keepSharedDraw,
         onSharedUpdate = keepSharedUpdate
     ),
     BARRACKS(
-        displayName = "Barracks",
+        buildingProperties = BuildingProperties(
+            displayName = "Barracks",
+            health = 5.0,
+
+            stationary = true,
+            captureProperties = CaptureProperties.noFunction,
+            spawnChance = 0.02
+        ),
+
         registryName = "tw_barracks",
         description = "Barracks that will train and send out offensive soldiers",
         tankClass = TankBarracks::class.java,
-
-        health = 5.0,
-
-        stationary = true,
-        captureProperties = CaptureProperties.noFunction,
-        spawnChance = 0.02
     ),
     OUTPOST(
-        displayName = "Outpost",
+        buildingProperties = BuildingProperties(
+            displayName = "Outpost",
+            health = 5.0,
+
+            stationary = true,
+            captureProperties = CaptureProperties.noFunction,
+            spawnChance = 0.06
+        ),
+
         registryName = "tw_outpost",
         description = "Small outpost that spawns a few defensive tanks",
         tankClass = TankOutpost::class.java,
-
-        health = 5.0,
-
-        stationary = true,
-        captureProperties = CaptureProperties.noFunction,
-        spawnChance = 0.06
     ),
     SENTRY(
-        displayName = "Sentry Gun",
+        buildingProperties = BuildingProperties(
+            displayName = "Sentry Gun",
+            health = 8.0,
+
+            stationary = true,
+        ),
+
         registryName = "tw_sentry",
         description = "An armored sentry gun that will fire at enemy tanks in sight",
         tankClass = TankSentry::class.java,
-
-        health = 8.0,
-
-        stationary = true,
     )
     ;
 
     companion object {
-        fun getBuildingTypeFromClass(buildingClass: Class<out Tank>): BuildingType? {
-            for (buildingType in BuildingType.entries) {
-                if (buildingType.tankClass == buildingClass) {
+        fun getTankTypeFromClass(tankClass: Class<out Tank>): TwTankType? {
+            for (buildingType in TwTankType.entries) {
+                if (buildingType.tankClass == tankClass) {
                     return buildingType
                 }
             }
@@ -161,10 +188,10 @@ enum class BuildingType(
             return null
         }
 
-        fun getBuildingTypeFromName(name: String): BuildingType? {
+        fun getTankTypeFromName(name: String): TwTankType? {
             for (tankEntry in Game.registryTank.tankEntries) {
                 if (tankEntry.name == name) {
-                    return getBuildingTypeFromClass(tankEntry.tank)
+                    return getTankTypeFromClass(tankEntry.tank)
                 }
             }
 

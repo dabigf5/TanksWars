@@ -22,7 +22,7 @@ class TanksWarsExtension : Extension("TanksWars") {
     }
 
     override fun preUpdate() {
-        sharedPreUpdateBuildings()
+        sharedPreUpdateTanks()
     }
 
     override fun draw() {
@@ -33,9 +33,9 @@ class TanksWarsExtension : Extension("TanksWars") {
             screen is ScreenLevelEditorOverlay ||
             screen is IConditionalOverlayScreen ||
             screen is ILevelPreviewScreen ||
-            screen is ScreenTankEditor
+            screen is ScreenEditorTank
         )) {
-            sharedDrawBuildings()
+            sharedDrawTanks()
             CommandingSystem.draw()
         }
 
@@ -49,7 +49,7 @@ class TanksWarsExtension : Extension("TanksWars") {
         if (!ScreenPartyLobby.isClient) {
             deathCheck()
         }
-        sharedUpdateBuildings()
+        sharedUpdateTanks()
         CommandingSystem.update()
 
         lastScreen = Game.screen

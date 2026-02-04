@@ -1,21 +1,17 @@
 package tools.important.tankswars.util
 
+import basewindow.Color
 import tanks.Team
 
-typealias Color = Triple<Double, Double, Double>
-
-val Color.r
-    get() = first
-
-val Color.g
-    get() = second
-
-val Color.b
-    get() = third
-
-
-val Team.teamColor
-    get() = Color(teamColorR, teamColorG, teamColorB)
+operator fun Color.component1(): Double {
+    return red
+}
+operator fun Color.component2(): Double {
+    return green
+}
+operator fun Color.component3(): Double {
+    return blue
+}
 
 fun getTeamColorOrGray(team: Team?): Color {
     if (team == null) return Color(128.0, 128.0, 128.0)

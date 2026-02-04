@@ -2,7 +2,7 @@ package tools.important.tankswars.core
 
 import tanks.Game.registerTank
 import tanks.tank.Tank
-import tools.important.tankswars.building.BuildingType
+import tools.important.tankswars.building.TwTankType
 import tools.important.tankswars.event.to_client.*
 import tools.important.tankswars.tank.TankFiller
 import tools.important.tankswars.tank.TankSoldier
@@ -40,8 +40,8 @@ fun initializeTanksWars() {
     registerTank0W(TankSoldierDefender::class.java, "tw_soldierdefender")
     registerFiller(10 - 3) // skip to next row
 
-    for (buildingType in BuildingType.entries) {
+    for (buildingType in TwTankType.entries) {
         registerTank0W(buildingType.tankClass, buildingType.registryName)
     }
-    registerFiller(BuildingType.entries.size)
+    registerFiller(TwTankType.entries.size)
 }

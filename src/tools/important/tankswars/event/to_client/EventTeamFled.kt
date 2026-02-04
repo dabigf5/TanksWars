@@ -1,10 +1,13 @@
 package tools.important.tankswars.event.to_client
 
+import basewindow.Color
 import io.netty.buffer.ByteBuf
 import tanks.gui.screen.ScreenPartyLobby
 import tanks.network.event.PersonalEvent
 import tools.important.tankswars.core.News
-import tools.important.tankswars.util.Color
+import tools.important.tankswars.util.component1
+import tools.important.tankswars.util.component2
+import tools.important.tankswars.util.component3
 import tools.important.tankswars.util.readString
 import tools.important.tankswars.util.sendFleeMessage
 import tools.important.tankswars.util.writeString
