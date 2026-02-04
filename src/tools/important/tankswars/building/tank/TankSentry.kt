@@ -1,5 +1,7 @@
 package tools.important.tankswars.building.tank
 
+import tanks.bullet.BulletEffect
+
 class TankSentry(name: String, x: Double, y: Double, angle: Double) : TankBuilding(
     name,
     x,
@@ -16,8 +18,7 @@ class TankSentry(name: String, x: Double, y: Double, angle: Double) : TankBuildi
         bullet.speed = 12.0
         bullet.size = 5.0
         bullet.damage = 0.04
-        // todo: figure this out
-//        bullet.effect = Bullet.BulletEffect.fire
+        bullet.effect = BulletEffect.fire
         bullet.maxLiveBullets = 0
         bullet.item?.cooldown = 2.5
 
