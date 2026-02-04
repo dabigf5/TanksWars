@@ -13,14 +13,20 @@ import tools.important.tankswars.core.CommandType
  * @see tools.important.tankswars.core.CommandingSystem
  */
 class EventIssueCommand(
-    var commandType: CommandType? = null
+    var commandType: CommandType? = null,
+    var mouseX: Double? = null,
+    var mouseY: Double? = null
 ) : PersonalEvent() {
     override fun write(buf: ByteBuf) {
         buf.writeInt(commandType!!.ordinal)
+        buf.writeDouble(mouseX!!)
+        buf.writeDouble(mouseY!!)
     }
 
     override fun read(buf: ByteBuf) {
         commandType = CommandType.entries[buf.readInt()]
+        mouseX = buf.readDouble()
+        mouseY = buf.readDouble()
     }
 
     override fun execute() {
@@ -32,7 +38,7 @@ class EventIssueCommand(
         } ?.value as? TankPlayerRemote
 
         if (commanderTank != null) {
-            commandType!!.executeServer(commanderTank)
+            commandType!!.executeServer(commanderTank, mouseX!!, mouseY!!)
         }
     }
 }

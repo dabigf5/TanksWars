@@ -23,9 +23,9 @@ class OrderMessage (
 
 enum class CommandType(
     val key: Int,
-    val executeServer: (Tank) -> Unit,
+    val executeServer: (Tank, Double, Double) -> Unit,
 ) {
-    ON_ME(GLFW.GLFW_KEY_X, { commander ->
+    ON_ME(GLFW.GLFW_KEY_X, { commander, _, _ ->
         CommandingSystem.commandAllNearbyServer(commander, commander)
 
         OrderMessage("On me!", commander, null).also { msg ->
@@ -33,10 +33,7 @@ enum class CommandType(
             Game.eventsOut.add(EventCommandMessage(msg))
         }
     }),
-    OVER_THERE(GLFW.GLFW_KEY_C, execute@{ commander ->
-        val mX = Drawing.drawing.mouseX
-        val mY = Drawing.drawing.mouseY
-
+    OVER_THERE(GLFW.GLFW_KEY_C, execute@{ commander, mX, mY ->
         val player = Game.playerTank
 
         var lastDistance = Double.POSITIVE_INFINITY
@@ -61,7 +58,7 @@ enum class CommandType(
             Game.eventsOut.add(EventCommandMessage(msg))
         }
     }),
-    FORGET_ORDERS(GLFW.GLFW_KEY_V, { commander ->
+    FORGET_ORDERS(GLFW.GLFW_KEY_V, { commander, _, _ ->
         CommandingSystem.commandAllNearbyServer(commander, null)
         OrderMessage("Forget orders!", commander, null).also { msg ->
             CommandingSystem.recentOrders.add(msg)
@@ -94,9 +91,9 @@ object CommandingSystem {
             if (Game.game.window.validPressedKeys.contains(commandType.key)) {
                 Game.game.window.validPressedKeys.remove(commandType.key)
                 if (ScreenPartyLobby.isClient) {
-                    Game.eventsOut.add(EventIssueCommand(commandType))
+                    Game.eventsOut.add(EventIssueCommand(commandType, Drawing.drawing.mouseX, Drawing.drawing.mouseY))
                 } else {
-                    commandType.executeServer(Game.playerTank)
+                    commandType.executeServer(Game.playerTank, Drawing.drawing.mouseX, Drawing.drawing.mouseY)
                 }
             }
         }
