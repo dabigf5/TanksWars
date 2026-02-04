@@ -5,8 +5,6 @@ import tanks.tank.Tank
 import tools.important.tankswars.building.TwTankType
 import tools.important.tankswars.event.to_client.*
 import tools.important.tankswars.tank.TankFiller
-import tools.important.tankswars.tank.TankSoldier
-import tools.important.tankswars.tank.TankSoldierCaptain
 import tools.important.tankswars.tank.TankSoldierDefender
 import tanks.network.NetworkEventMap.register as registerNetworkEvent
 
@@ -35,5 +33,9 @@ fun initializeTanksWars() {
 
     for (buildingType in TwTankType.entries) {
         registerTank0W(buildingType.tankClass, buildingType.registryName)
+        // this is a dumb way to do layout... todo something better
+        if (buildingType.tankClass == TankSoldierDefender::class.java) {
+            registerFiller(10-3)
+        }
     }
 }

@@ -103,6 +103,33 @@ enum class TwTankType(
     val onSharedUpdate: ((Tank) -> Unit)? = null,
     val onSharedPreUpdate: ((Tank) -> Unit)? = null,
 ) {
+    SOLDIER(
+        soldierProperties = SoldierProperties(
+            commandable = true,
+        ),
+        tankClass = TankSoldier::class.java,
+        registryName = "tw_soldier",
+        description = "An offensive soldier who will seek out enemies",
+    ),
+
+    SOLDIER_CAPTAIN(
+        soldierProperties = SoldierProperties(
+            commandable = true,
+        ),
+        tankClass = TankSoldierCaptain::class.java,
+        registryName = "tw_soldiercaptain",
+        description = "A slightly stronger captain of offensive soldiers",
+    ),
+
+    DEFENSIVE_SOLDIER(
+        soldierProperties = SoldierProperties(
+            commandable = true,
+        ),
+        tankClass = TankSoldierDefender::class.java,
+        registryName = "tw_soldierdefender",
+        description = "A defensive soldier who will defend the tank that spawned them",
+    ),
+
     // this enum does not directly define lambdas in the constructor parameters due to a bug in intellij that makes debugging a pain in the nuts
     // https://youtrack.jetbrains.com/issue/IDEA-305703/Debugger-Breakpoints-in-lambda-functions-in-enum-constants-constructor-are-ignored
     KEEP(
@@ -177,33 +204,6 @@ enum class TwTankType(
         registryName = "tw_sentry",
         description = "An armored sentry gun that will fire at enemy tanks in sight",
         tankClass = TankSentry::class.java,
-    ),
-
-    SOLDIER(
-        soldierProperties = SoldierProperties(
-            commandable = true,
-        ),
-        tankClass = TankSoldier::class.java,
-        registryName = "tw_soldier",
-        description = "An offensive soldier who will seek out enemies",
-    ),
-
-    SOLDIER_CAPTAIN(
-        soldierProperties = SoldierProperties(
-            commandable = true,
-        ),
-        tankClass = TankSoldierCaptain::class.java,
-        registryName = "tw_soldiercaptain",
-        description = "A slightly stronger captain of offensive soldiers",
-    ),
-
-    DEFENSIVE_SOLDIER(
-        soldierProperties = SoldierProperties(
-            commandable = true,
-        ),
-        tankClass = TankSoldierDefender::class.java,
-        registryName = "tw_soldierdefender",
-        description = "A defensive soldier who will defend the tank that spawned them",
     ),
     ;
 
