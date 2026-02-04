@@ -14,7 +14,7 @@ import tools.important.tankswars.event.to_server.EventIssueCommand
 import tools.important.tankswars.tank.TankCommandable
 import kotlin.math.sqrt
 
-class OrderMessage (
+class CommandMessage (
     val text: String,
     val orderer: Tank,
     val visualTarget: Tank?,
@@ -28,7 +28,7 @@ enum class CommandType(
     ON_ME(GLFW.GLFW_KEY_X, { commander, _, _ ->
         CommandingSystem.commandAllNearbyServer(commander, commander)
 
-        OrderMessage("On me!", commander, null).also { msg ->
+        CommandMessage("On me!", commander, null).also { msg ->
             CommandingSystem.recentOrders.add(msg)
             Game.eventsOut.add(EventCommandMessage(msg))
         }
@@ -53,14 +53,14 @@ enum class CommandType(
 
         CommandingSystem.commandAllNearbyServer(commander, target)
 
-        OrderMessage("Over there!", commander, target).also { msg ->
+        CommandMessage("Over there!", commander, target).also { msg ->
             CommandingSystem.recentOrders.add(msg)
             Game.eventsOut.add(EventCommandMessage(msg))
         }
     }),
     FORGET_ORDERS(GLFW.GLFW_KEY_V, { commander, _, _ ->
         CommandingSystem.commandAllNearbyServer(commander, null)
-        OrderMessage("Forget orders!", commander, null).also { msg ->
+        CommandMessage("Forget orders!", commander, null).also { msg ->
             CommandingSystem.recentOrders.add(msg)
             Game.eventsOut.add(EventCommandMessage(msg))
         }
@@ -70,7 +70,7 @@ enum class CommandType(
 const val COMMANDING_RADIUS = Game.tile_size * 6.0
 
 object CommandingSystem {
-    val recentOrders = mutableListOf<OrderMessage>()
+    val recentOrders = mutableListOf<CommandMessage>()
 
     fun commandAllNearbyServer(commander: Tank, target: Movable?) {
         for (m in Game.movables) {

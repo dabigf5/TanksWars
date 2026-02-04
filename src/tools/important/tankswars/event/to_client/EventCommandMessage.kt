@@ -5,7 +5,7 @@ import tanks.gui.screen.ScreenPartyLobby
 import tanks.network.event.PersonalEvent
 import tanks.tank.Tank
 import tools.important.tankswars.core.CommandingSystem
-import tools.important.tankswars.core.OrderMessage
+import tools.important.tankswars.core.CommandMessage
 import tools.important.tankswars.event.NIL_ID
 import tools.important.tankswars.util.readString
 import tools.important.tankswars.util.writeString
@@ -16,7 +16,7 @@ import tools.important.tankswars.util.writeString
  * @see tools.important.tankswars.core.CommandingSystem
  */
 class EventCommandMessage(
-    var message: OrderMessage? = null
+    var message: CommandMessage? = null
 ) : PersonalEvent() {
     override fun write(buf: ByteBuf) {
         buf.writeString(message!!.text)
@@ -33,7 +33,7 @@ class EventCommandMessage(
         val visualTargetId = buf.readInt()
         val visualTarget = if(visualTargetId != NIL_ID) Tank.idMap[visualTargetId] else null
 
-        message = OrderMessage(
+        message = CommandMessage(
             messageText,
             orderer,
             visualTarget,
