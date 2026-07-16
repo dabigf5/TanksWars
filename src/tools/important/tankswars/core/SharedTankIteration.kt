@@ -17,15 +17,15 @@ fun sharedPreUpdateTanks() {
         val tankType = TwTankType.getTankTypeFromName(movable.name) ?: continue
 
         if (tankType.buildingProperties?.stationary == true) {
-            // this failing implies a misconfiguration
-            movable as TankBuilding
-
             movable.vX = 0.0
             movable.vY = 0.0
             movable.orientation = 0.0
 
-            movable.posX = movable.startPosX
-            movable.posY = movable.startPosY
+            if (movable is TankBuilding) {
+                // only reach if on the server
+                movable.posX = movable.startPosX
+                movable.posY = movable.startPosY
+            }
         }
 
         tankType.onSharedPreUpdate?.invoke(movable)

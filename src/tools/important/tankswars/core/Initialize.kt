@@ -6,7 +6,7 @@ import tools.important.tankswars.building.TwTankType
 import tools.important.tankswars.event.to_client.*
 import tools.important.tankswars.event.to_server.EventIssueCommand
 import tools.important.tankswars.tank.TankFiller
-import tools.important.tankswars.tank.TankSoldierDefender
+import tools.important.tankswars.tank.TankSoldierEngineer
 import tanks.network.NetworkEventMap.register as registerNetworkEvent
 
 private fun registerTank0W(tankClass: Class<out Tank>, name: String) = registerTank(tankClass, name, 0.0)
@@ -30,15 +30,15 @@ fun initializeTanksWars() {
     registerNetworkEvent(EventBuildingWasDestroyed::class.java)
     registerNetworkEvent(EventTankEmblemUpdate::class.java)
     registerNetworkEvent(EventIssueCommand::class.java)
-    registerNetworkEvent(EventCommandMessage::class.java)
+    registerNetworkEvent(EventBattleMessage::class.java)
 
     registerFiller(3) // skip to page 2
 
     for (buildingType in TwTankType.entries) {
         registerTank0W(buildingType.tankClass, buildingType.registryName)
         // this is a dumb way to do layout... todo something better
-        if (buildingType.tankClass == TankSoldierDefender::class.java) {
-            registerFiller(10-3)
+        if (buildingType.tankClass == TankSoldierEngineer::class.java) {
+            registerFiller(10-4)
         }
     }
 }

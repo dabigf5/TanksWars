@@ -4,6 +4,10 @@ import basewindow.Color
 import tanks.Movable
 import tanks.tank.TankAIControlled
 import tools.important.tankswars.building.TwTankType
+import tools.important.tankswars.building.spawnTwTank
+import tools.important.tankswars.building.tank.TankBuilding
+import tools.important.tankswars.core.BattleMessage
+import tools.important.tankswars.core.BattleMessageSystem
 
 
 interface TankCommandable {
@@ -99,5 +103,49 @@ class TankSoldierDefender(name: String, x: Double, y: Double, angle: Double) : T
         maxDistanceFromParent = 100.0
 
         health = 0.6
+    }
+}
+
+const val ENGINEER_MAX_METAL = 200
+val engineerMetalCosts = mapOf(
+    TwTankType.SENTRY to 130
+)
+val engineerBuildSuffixes = listOf(
+    " coming right up!",
+    " going up!",
+)
+const val engineerCalloutTime = 150.0
+class TankSoldierEngineer(name: String, x: Double, y: Double, angle: Double) : TankSoldier(name, x, y, angle) {
+    init {
+        color = Color(60.0, 60.0, 60.0)
+        secondaryColor = Color(130.0, 90.0, 60.0)
+
+        enablePathfinding = false
+        seekChance = 0.0
+
+        size = 50.0
+        health = 1.0
+    }
+
+    var metal: Int = ENGINEER_MAX_METAL
+    val built = mutableMapOf<TwTankType, TankBuilding>()
+
+    fun tryBuild(buildable: TwTankType) {
+        val metalCost = engineerMetalCosts[buildable]!!
+        val existing = built[buildable]
+
+        if (existing == null && metal >= metalCost) {
+            spawnTwTank(buildable, posX, posY, team = team)
+            metal -= metalCost
+            val callout = "${buildable.buildingProperties!!.displayName}${engineerBuildSuffixes.random()}"
+
+            BattleMessageSystem.broadcastMessage(BattleMessage(callout, this, remainingTime = engineerCalloutTime))
+        }
+    }
+
+    override fun update() {
+        tryBuild(TwTankType.SENTRY)
+
+        super.update()
     }
 }

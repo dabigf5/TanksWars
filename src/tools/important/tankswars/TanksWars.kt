@@ -36,6 +36,7 @@ class TanksWarsExtension : Extension("TanksWars") {
         )) {
             sharedDrawTanks()
             CommandingSystem.draw()
+            BattleMessageSystem.draw()
         }
 
         News.draw()
@@ -50,6 +51,7 @@ class TanksWarsExtension : Extension("TanksWars") {
         }
         sharedUpdateTanks()
         CommandingSystem.update()
+        BattleMessageSystem.update()
 
         lastScreen = Game.screen
     }
