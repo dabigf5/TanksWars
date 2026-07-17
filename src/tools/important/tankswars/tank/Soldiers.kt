@@ -16,6 +16,7 @@ import tools.important.tankswars.core.BattleMessage
 import tools.important.tankswars.core.BattleMessageSystem
 import tools.important.tankswars.core.SharedSystem
 import tools.important.tankswars.util.isDeadForReal
+import kotlin.math.min
 
 
 interface TankCommandable {
@@ -123,6 +124,9 @@ class TankSoldierEngineer(name: String, x: Double, y: Double, angle: Double) : T
         enablePathfinding = false
         seekChance = 0.0
 
+        enableLookingAtTargetEnemy = true
+        targetEnemySightBehavior = TargetEnemySightBehavior.keep_distance
+
         size = 50.0
         health = 1.0
     }
@@ -170,12 +174,14 @@ class TankSoldierEngineer(name: String, x: Double, y: Double, angle: Double) : T
             if (m.team != this.team) continue
             if (m.destroy) continue
 
+
+            // todo: replace, this is a temporary metal gain mechanism
             if (distanceBetween(m, this) < size*1.5) {
                 val metal = SharedSystem.getInt(this, "metal")
 
                 m.destroy = true
                 Game.eventsOut.add(EventBulletDestroyed(m))
-                SharedSystem.broadcastPropertyUpdate(this, "metal",  metal + 5)
+                SharedSystem.broadcastPropertyUpdate(this, "metal", min(metal + 5, ENGINEER_MAX_METAL))
             }
         }
 
@@ -183,6 +189,12 @@ class TankSoldierEngineer(name: String, x: Double, y: Double, angle: Double) : T
             for (building in built) {
                 building.value.destroy = true
                 Game.eventsOut.add(EventTankRemove(building.value, true))
+            }
+        } else {
+            for (building in built) {
+                if (building.value.isDeadForReal) {
+                    built.remove(building.key)
+                }
             }
         }
 
