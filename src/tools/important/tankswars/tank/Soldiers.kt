@@ -6,6 +6,7 @@ import tanks.Game
 import tanks.Movable
 import tanks.bullet.Bullet
 import tanks.network.event.EventBulletDestroyed
+import tanks.network.event.EventTankRemove
 import tanks.tank.Tank
 import tanks.tank.TankAIControlled
 import tools.important.tankswars.building.TwTankType
@@ -14,6 +15,7 @@ import tools.important.tankswars.building.tank.TankBuilding
 import tools.important.tankswars.core.BattleMessage
 import tools.important.tankswars.core.BattleMessageSystem
 import tools.important.tankswars.core.SharedSystem
+import tools.important.tankswars.util.isDeadForReal
 
 
 interface TankCommandable {
@@ -149,11 +151,14 @@ class TankSoldierEngineer(name: String, x: Double, y: Double, angle: Double) : T
         val existing = built[buildable]
 
         if (existing == null && metal >= metalCost) {
-            spawnTwTank(buildable, posX, posY, team = team)
+            val building = spawnTwTank(buildable, posX, posY) {
+                it.team = team
+            } as TankBuilding
             SharedSystem.broadcastPropertyUpdate(this, "metal", metal - metalCost)
             val callout = "${buildable.buildingProperties!!.displayName}${engineerBuildSuffixes.random()}"
 
             BattleMessageSystem.broadcastMessage(BattleMessage(callout, this, remainingTime = engineerCalloutTime))
+            built[buildable] = building
         }
     }
 
@@ -171,6 +176,13 @@ class TankSoldierEngineer(name: String, x: Double, y: Double, angle: Double) : T
                 m.destroy = true
                 Game.eventsOut.add(EventBulletDestroyed(m))
                 SharedSystem.broadcastPropertyUpdate(this, "metal",  metal + 5)
+            }
+        }
+
+        if (isDeadForReal) {
+            for (building in built) {
+                building.value.destroy = true
+                Game.eventsOut.add(EventTankRemove(building.value, true))
             }
         }
 
