@@ -10,12 +10,12 @@ import tanks.network.event.EventTankUpdateHealth
 import tanks.tank.Explosion
 import tanks.tank.Mine
 import tanks.tank.Tank
-import tanks.tank.TankAIControlled
 import tools.important.tankswars.twtank.TwTankType
 import tools.important.tankswars.core.News
 import tools.important.tankswars.core.SharedSystem
 import tools.important.tankswars.event.to_client.EventBuildingWasCaptured
 import tools.important.tankswars.event.to_client.EventBuildingWasSilentlyCaptured
+import tools.important.tankswars.twtank.TwTank
 import tools.important.tankswars.util.broadcastDestroyMessage
 import tools.important.tankswars.util.isDeadForReal
 import tools.important.tankswars.util.sendCaptureMessage
@@ -29,7 +29,7 @@ import tools.important.tankswars.util.sendCaptureMessage
  *
  * @see TwTankType
  */
-abstract class TankBuilding(name: String, x: Double, y: Double, angle: Double) : TankAIControlled(
+abstract class TankBuilding(name: String, x: Double, y: Double, angle: Double) : TwTank(
     name,
     x,
     y,
@@ -78,8 +78,10 @@ abstract class TankBuilding(name: String, x: Double, y: Double, angle: Double) :
         }
 
         if (type.buildingProperties!!.captureProperties == null) {
-            if (deadForReal)
+            if (deadForReal) {
                 sendDestroyMessage(sourceTank)
+                twOnDeath()
+            }
             return deadForReal
         }
 
@@ -101,6 +103,10 @@ abstract class TankBuilding(name: String, x: Double, y: Double, angle: Double) :
 
         if (typeSpawnChance != null) {
             spawnChance = if (team != null) typeSpawnChance else 0.0
+        }
+
+        if (destroy) {
+            twOnDeath()
         }
 
         super.update()

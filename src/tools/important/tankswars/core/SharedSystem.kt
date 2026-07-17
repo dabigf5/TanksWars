@@ -9,6 +9,7 @@ import tanks.gui.screen.ScreenPartyHost
 import tanks.gui.screen.ScreenPartyLobby
 import tanks.gui.screen.leveleditor.ScreenLevelEditorOverlay
 import tanks.tank.Tank
+import tools.important.tankswars.event.to_client.EventEraseSharedProperties
 import tools.important.tankswars.twtank.TwTankType
 import tools.important.tankswars.twtank.tank.TankBuilding
 import tools.important.tankswars.event.to_client.EventUpdateSharedProperty
@@ -123,6 +124,25 @@ object SharedSystem {
 
     private fun initializeProperties(tank: Tank) {
         sharedProperties.putIfAbsent(tank.networkID, mutableMapOf())
+    }
+
+    fun broadcastClearProperties(tank: Tank) {
+        broadcastClearProperties(tank.networkID)
+    }
+    fun broadcastClearProperties(tankId: Int) {
+        if (!sharedProperties.contains(tankId)) {
+            return
+        }
+        clearProperties(tankId)
+        Game.eventsOut.add(EventEraseSharedProperties(tankId))
+    }
+    fun clearProperties(tank: Tank) {
+        if (sharedProperties.contains(tank.networkID))
+            sharedProperties.remove(tank.networkID)
+    }
+    fun clearProperties(tankId: Int) {
+        if (sharedProperties.contains(tankId))
+            sharedProperties.remove(tankId)
     }
 
     fun setProperty(tankId: Int, propertyName: String, value: Any?) {

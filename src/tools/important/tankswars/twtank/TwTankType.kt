@@ -186,6 +186,20 @@ enum class TwTankType(
         description = "Barracks that will train and send out offensive soldiers",
         tankClass = TankBarracks::class.java,
     ),
+    COLLEGE(
+        buildingProperties = BuildingProperties(
+            displayName = "College",
+            health = 2.0,
+
+            stationary = true,
+            captureProperties = CaptureProperties.noFunction,
+            spawnChance = 0.001 // "Right you are. MIT graduates are few and far between these days."
+        ),
+
+        registryName = "tw_college",
+        description = "College that will educate and send out engineers to help their team",
+        tankClass = TankCollege::class.java,
+    ),
     OUTPOST(
         buildingProperties = BuildingProperties(
             displayName = "Outpost",

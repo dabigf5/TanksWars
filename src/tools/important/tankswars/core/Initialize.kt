@@ -32,6 +32,7 @@ fun initializeTanksWars() {
     registerNetworkEvent(EventIssueCommand::class.java)
     registerNetworkEvent(EventBattleMessage::class.java)
     registerNetworkEvent(EventUpdateSharedProperty::class.java)
+    registerNetworkEvent(EventEraseSharedProperties::class.java)
 
     registerFiller(3) // skip to page 2
 

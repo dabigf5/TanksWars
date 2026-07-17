@@ -3,18 +3,19 @@ package tools.important.tankswars.twtank.tank
 import basewindow.Color
 import tanks.Drawing
 import tanks.Game
+import tanks.GameObject
 import tanks.Movable
 import tanks.Panel
 import tanks.Team
 import tanks.network.event.EventTankRemove
 import tanks.network.event.EventTankUpdateHealth
 import tanks.tank.Tank
-import tanks.tank.TankAIControlled
 import tools.important.tankswars.twtank.TwTankType
 import tools.important.tankswars.twtank.spawnTwTank
 import tools.important.tankswars.core.BattleMessage
 import tools.important.tankswars.core.BattleMessageSystem
 import tools.important.tankswars.core.SharedSystem
+import tools.important.tankswars.twtank.TwTank
 import tools.important.tankswars.util.getTeamColorOrGray
 import tools.important.tankswars.util.isDeadForReal
 import kotlin.collections.iterator
@@ -26,7 +27,7 @@ interface TankCommandable {
     fun getTarget(): Movable?
 }
 
-open class TankSoldier(name: String, x: Double, y: Double, angle: Double) : TankAIControlled(
+open class TankSoldier(name: String, x: Double, y: Double, angle: Double) : TwTank(
     name,
     x,
     y,
@@ -78,6 +79,12 @@ open class TankSoldier(name: String, x: Double, y: Double, angle: Double) : Tank
     override fun isInterestingPathTarget(m: Movable?): Boolean {
         if (orderedTarget != null) return m == orderedTarget
         return super.isInterestingPathTarget(m)
+    }
+
+    override fun damage(amount: Double, source: GameObject?): Boolean {
+        val died = super.damage(amount, source)
+        if (died) twOnDeath()
+        return died
     }
 
     override fun setTarget(m: Movable?) {
