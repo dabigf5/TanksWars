@@ -194,30 +194,18 @@ class TankSoldierEngineer(name: String, x: Double, y: Double, angle: Double) : T
     }
 
     override fun update() {
+        super.update()
         SharedSystem.broadcastSetPropertyIfNull(this, "metal", ENGINEER_MAX_METAL)
 
-//        if (built[TwTankType.DISPENSER] == null && SharedSystem.getInt(this, "metal") < 100) {
-//
-//        }
-        
-        if (buildCooldown > 0) {
-            buildCooldown -= Panel.frameFrequency
-        } else {
-            tryBuild(TwTankType.DISPENSER)
-            tryBuild(TwTankType.SENTRY)
+        // if the engineer has no dispenser and can't afford one, just die;
+        // it will only be a liability to its team without a metal supply, as it lingers on with a crumbling nest that could be
+        // replaced by another engineer
+        if (built[TwTankType.DISPENSER] == null && SharedSystem.getInt(this, "metal") < engineerMetalCosts[TwTankType.DISPENSER]!!) {
+            destroy = true
+            Game.eventsOut.add(EventTankRemove(this, true))
         }
 
-        if (repairCooldown > 0) {
-            repairCooldown -= Panel.frameFrequency
-        } else {
-            for (m in Game.movables) {
-                if (m !is TankBuilding) continue
-                tryRepair(m)
-                if (repairCooldown > 0) break
-            }
-        }
-
-        if (isDeadForReal) {
+        if (destroy || isDeadForReal) {
             for (building in built) {
                 building.value.destroy = true
                 Game.eventsOut.add(EventTankRemove(building.value, true))
@@ -234,7 +222,24 @@ class TankSoldierEngineer(name: String, x: Double, y: Double, angle: Double) : T
             }
         }
 
-        super.update()
+        if (destroy) return
+
+        if (buildCooldown > 0) {
+            buildCooldown -= Panel.frameFrequency
+        } else {
+            tryBuild(TwTankType.DISPENSER)
+            tryBuild(TwTankType.SENTRY)
+        }
+
+        if (repairCooldown > 0) {
+            repairCooldown -= Panel.frameFrequency
+        } else {
+            for (m in Game.movables) {
+                if (m !is TankBuilding) continue
+                tryRepair(m)
+                if (repairCooldown > 0) break
+            }
+        }
     }
 }
 
