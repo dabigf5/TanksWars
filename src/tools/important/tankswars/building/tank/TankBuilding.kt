@@ -11,9 +11,9 @@ import tanks.tank.Explosion
 import tanks.tank.Mine
 import tanks.tank.Tank
 import tanks.tank.TankAIControlled
-import tools.important.tankswars.TanksWars
 import tools.important.tankswars.building.TwTankType
 import tools.important.tankswars.core.News
+import tools.important.tankswars.core.SharedSystem
 import tools.important.tankswars.event.to_client.EventBuildingWasCaptured
 import tools.important.tankswars.event.to_client.EventBuildingWasSilentlyCaptured
 import tools.important.tankswars.util.broadcastDestroyMessage
@@ -111,7 +111,7 @@ abstract class TankBuilding(name: String, x: Double, y: Double, angle: Double) :
 
         team = capturingTank?.team
 
-        TanksWars.buildingProperties[this]!!["timeSinceCapture"] = 0.0
+        SharedSystem.setProperty(this, "timeSinceCapture", 0.0)
 
         val eventsOut = Game.eventsOut
         eventsOut.add(EventTankUpdateHealth(this))

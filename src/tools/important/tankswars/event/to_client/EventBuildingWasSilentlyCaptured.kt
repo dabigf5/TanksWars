@@ -4,8 +4,8 @@ import io.netty.buffer.ByteBuf
 import tanks.gui.screen.ScreenPartyLobby
 import tanks.network.event.PersonalEvent
 import tanks.tank.Tank
-import tools.important.tankswars.TanksWars
 import tools.important.tankswars.building.tank.TankKeepBase
+import tools.important.tankswars.core.SharedSystem
 import tools.important.tankswars.event.NIL_ID
 
 /**
@@ -40,7 +40,7 @@ class EventBuildingWasSilentlyCaptured(
 
         capturedTank!!.team = capturingTank?.team
 
-        TanksWars.buildingProperties[capturedTank]!!["timeSinceCapture"] = 0.0
+        SharedSystem.setProperty(capturedTank!!, "timeSinceCapture", 0.0)
     }
 
 }

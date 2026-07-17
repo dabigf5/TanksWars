@@ -3,7 +3,7 @@ package tools.important.tankswars.event.to_client
 import io.netty.buffer.ByteBuf
 import tanks.network.event.PersonalEvent
 import tanks.tank.Tank
-import tools.important.tankswars.TanksWars
+import tools.important.tankswars.core.SharedSystem
 import tools.important.tankswars.util.readString
 import tools.important.tankswars.util.writeString
 
@@ -68,6 +68,6 @@ class EventUpdateSharedProperty(
     }
 
     override fun execute() {
-        TanksWars.buildingProperties[tank!!]!![propertyName!!] = propertyValue!!
+        SharedSystem.setProperty(tank!!, propertyName!!, propertyValue)
     }
 }

@@ -3,14 +3,12 @@ package tools.important.tankswars
 import main.Tanks
 import tanks.Game
 import tanks.extension.Extension
-import tanks.gui.screen.*
-import tanks.gui.screen.leveleditor.ScreenLevelEditorOverlay
-import tanks.tank.Tank
-import tools.important.tankswars.core.*
+import tanks.gui.screen.Screen
+import tools.important.tankswars.core.SharedSystem
+import tools.important.tankswars.core.initializeTanksWars
 
 object TanksWars {
     const val VERSION = "Tanks Wars 0.3.0"
-    val buildingProperties: MutableMap<Tank, MutableMap<String, Any>> = mutableMapOf()
 }
 
 var lastScreen: Screen? = null
@@ -22,36 +20,15 @@ class TanksWarsExtension : Extension("TanksWars") {
     }
 
     override fun preUpdate() {
-        sharedPreUpdateTanks()
+        SharedSystem.sharedPreUpdate()
     }
 
     override fun draw() {
-        // no way to make it draw under the pause menu, this has to be done
-        val screen = Game.screen
-        if (!(
-            screen is ScreenGame && (screen.paused) ||
-            screen is ScreenLevelEditorOverlay ||
-            screen is IConditionalOverlayScreen ||
-            screen is ScreenEditorTank
-        )) {
-            sharedDrawTanks()
-            CommandingSystem.draw()
-            BattleMessageSystem.draw()
-        }
-
-        News.draw()
+        SharedSystem.sharedDraw()
     }
 
     override fun update() {
-        if (Game.screen != lastScreen) TanksWars.buildingProperties.clear()
-
-        News.update()
-        if (!ScreenPartyLobby.isClient) {
-            deathCheck()
-        }
-        sharedUpdateTanks()
-        CommandingSystem.update()
-        BattleMessageSystem.update()
+        SharedSystem.sharedUpdate()
 
         lastScreen = Game.screen
     }

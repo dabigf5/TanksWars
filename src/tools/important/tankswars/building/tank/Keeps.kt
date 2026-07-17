@@ -5,7 +5,7 @@ import tanks.Game
 import tanks.Panel
 import tanks.network.event.EventTankRemove
 import tanks.tank.Tank
-import tools.important.tankswars.TanksWars
+import tools.important.tankswars.core.SharedSystem
 import tools.important.tankswars.core.flee
 import tools.important.tankswars.event.to_client.EventTankEmblemUpdate
 import tools.important.tankswars.tank.TankSoldierDefender
@@ -87,8 +87,7 @@ val keepSharedDraw = fun(tank: Tank) {
 
     if (tank.team == null) return
 
-    val properties = TanksWars.buildingProperties[tank] ?: return
-    val timeSinceCapture = properties["timeSinceCapture"] as Double? ?: return
+    val timeSinceCapture = SharedSystem.getDouble(tank, "timeSinceCapture")
 
     val circleSize = (timeSinceCapture / TankKeep.MAX_TIME_SINCE_CAPTURE) * TankKeep.KEEP_SQUARE_SIZE
     val circleOpacity = 200.0 - ((timeSinceCapture / TankKeep.MAX_TIME_SINCE_CAPTURE) * 200.0)
@@ -99,15 +98,13 @@ val keepSharedDraw = fun(tank: Tank) {
 }
 
 val keepSharedUpdate = fun(tank: Tank) {
-    val properties = TanksWars.buildingProperties[tank] ?: return
+    val oldTimeSinceCapture = SharedSystem.getDoubleOrNull(tank, "timeSinceCapture") ?: return
 
-    properties["timeSinceCapture"] as Double? ?: return
-
-    val newTimeSinceCapture = (properties["timeSinceCapture"] as Double) + Panel.frameFrequency
+    val newTimeSinceCapture = oldTimeSinceCapture + Panel.frameFrequency
     if (newTimeSinceCapture > TankKeep.MAX_TIME_SINCE_CAPTURE) {
-        properties.remove("timeSinceCapture")
+        SharedSystem.setProperty(tank, "timeSinceCapture", null)
         return
     }
 
-    properties["timeSinceCapture"] = newTimeSinceCapture
+    SharedSystem.setProperty(tank, "timeSinceCapture", newTimeSinceCapture)
 }
