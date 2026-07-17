@@ -136,6 +136,7 @@ class TankDispenser(name: String, x: Double, y: Double, angle: Double) : TankBui
 }
 
 val dispenserSharedDraw = fun(tank: Tank) {
+    if (tank.destroy) return
     drawMetalCount(tank)
     val drawing = Drawing.drawing
 

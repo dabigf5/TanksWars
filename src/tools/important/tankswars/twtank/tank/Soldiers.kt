@@ -263,6 +263,8 @@ val drawMetalCount = fun(tank: Tank) {
 }
 
 val engineerSharedDraw = fun(tank: Tank) {
+    if (tank.destroy) return
+
     val metal = SharedSystem.getIntOrNull(tank, "metal") ?: return
 
     drawMetalCount(tank)
