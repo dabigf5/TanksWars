@@ -49,6 +49,7 @@ abstract class TankBuilding(name: String, x: Double, y: Double, angle: Double) :
     init {
         description = type.description
         health = type.buildingProperties!!.health
+        baseHealth = type.buildingProperties.health
         enableMineLaying = false
 
         enableMovement = false
