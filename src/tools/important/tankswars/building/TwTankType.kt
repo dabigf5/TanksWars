@@ -8,6 +8,7 @@ import tools.important.tankswars.tank.TankSoldier
 import tools.important.tankswars.tank.TankSoldierCaptain
 import tools.important.tankswars.tank.TankSoldierDefender
 import tools.important.tankswars.tank.TankSoldierEngineer
+import tools.important.tankswars.tank.engineerSharedDraw
 
 /**
  * A class defining building capture behavior.
@@ -137,7 +138,8 @@ enum class TwTankType(
         ),
         tankClass = TankSoldierEngineer::class.java,
         registryName = "tw_soldierengi",
-        description = "An engineer who will place buildings to assist its team"
+        description = "An engineer who will place buildings to assist its team",
+        onSharedDraw = engineerSharedDraw,
     ),
 
     // this enum does not directly define lambdas in the constructor parameters due to a bug in intellij that makes debugging a pain in the nuts

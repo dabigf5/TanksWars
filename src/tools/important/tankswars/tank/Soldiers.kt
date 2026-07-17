@@ -1,13 +1,17 @@
 package tools.important.tankswars.tank
 
 import basewindow.Color
+import tanks.Drawing
 import tanks.Movable
+import tanks.tank.Tank
 import tanks.tank.TankAIControlled
+import tools.important.tankswars.TanksWars
 import tools.important.tankswars.building.TwTankType
 import tools.important.tankswars.building.spawnTwTank
 import tools.important.tankswars.building.tank.TankBuilding
 import tools.important.tankswars.core.BattleMessage
 import tools.important.tankswars.core.BattleMessageSystem
+import tools.important.tankswars.util.broadcastPropertyUpdate
 
 
 interface TankCommandable {
@@ -106,14 +110,6 @@ class TankSoldierDefender(name: String, x: Double, y: Double, angle: Double) : T
     }
 }
 
-const val ENGINEER_MAX_METAL = 200
-val engineerMetalCosts = mapOf(
-    TwTankType.SENTRY to 130
-)
-val engineerBuildSuffixes = listOf(
-    " coming right up!",
-    " going up!",
-)
 const val engineerCalloutTime = 150.0
 class TankSoldierEngineer(name: String, x: Double, y: Double, angle: Double) : TankSoldier(name, x, y, angle) {
     init {
@@ -127,16 +123,33 @@ class TankSoldierEngineer(name: String, x: Double, y: Double, angle: Double) : T
         health = 1.0
     }
 
-    var metal: Int = ENGINEER_MAX_METAL
+    private companion object { // why does this exist? because enum entries are null for some reason on the top level
+        const val ENGINEER_MAX_METAL = 200
+        val engineerMetalCosts = mapOf(
+            TwTankType.SENTRY to 130
+        )
+        val engineerBuildSuffixes = listOf(
+            " coming right up!",
+            " going up!",
+        )
+    }
+
     val built = mutableMapOf<TwTankType, TankBuilding>()
 
     fun tryBuild(buildable: TwTankType) {
+        val properties = TanksWars.buildingProperties[this]!!
+        if (properties["metal"] == null) {
+            properties["metal"] = ENGINEER_MAX_METAL
+        }
+
+        val metal = properties["metal"] as Int
+
         val metalCost = engineerMetalCosts[buildable]!!
         val existing = built[buildable]
 
         if (existing == null && metal >= metalCost) {
             spawnTwTank(buildable, posX, posY, team = team)
-            metal -= metalCost
+            broadcastPropertyUpdate(this, "metal", metal - metalCost)
             val callout = "${buildable.buildingProperties!!.displayName}${engineerBuildSuffixes.random()}"
 
             BattleMessageSystem.broadcastMessage(BattleMessage(callout, this, remainingTime = engineerCalloutTime))
@@ -148,4 +161,16 @@ class TankSoldierEngineer(name: String, x: Double, y: Double, angle: Double) : T
 
         super.update()
     }
+}
+val engineerSharedDraw = fun(tank: Tank) {
+    val properties = TanksWars.buildingProperties[tank]!!
+    val drawing = Drawing.drawing
+
+    val metal = properties["metal"] as? Int ?: return
+
+    val teamColor = tank.team.teamColor
+
+    drawing.setColor(teamColor.red, teamColor.green, teamColor.blue)
+    drawing.setFontSize(25.0)
+    drawing.drawText(tank.posX, tank.posY-tank.size, "$metal metal")
 }

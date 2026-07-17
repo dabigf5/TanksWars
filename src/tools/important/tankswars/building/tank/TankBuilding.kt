@@ -111,7 +111,6 @@ abstract class TankBuilding(name: String, x: Double, y: Double, angle: Double) :
 
         team = capturingTank?.team
 
-        TanksWars.buildingProperties.putIfAbsent(this, mutableMapOf())
         TanksWars.buildingProperties[this]!!["timeSinceCapture"] = 0.0
 
         val eventsOut = Game.eventsOut

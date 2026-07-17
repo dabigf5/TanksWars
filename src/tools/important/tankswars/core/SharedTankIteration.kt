@@ -3,6 +3,7 @@ package tools.important.tankswars.core
 import tanks.Drawing
 import tanks.Game
 import tanks.tank.Tank
+import tools.important.tankswars.TanksWars
 import tools.important.tankswars.building.TwTankType
 import tools.important.tankswars.building.tank.TankBuilding
 import tools.important.tankswars.util.component1
@@ -38,6 +39,7 @@ fun sharedUpdateTanks() {
 
         val tankType = TwTankType.getTankTypeFromName(movable.name) ?: continue
 
+        TanksWars.buildingProperties.putIfAbsent(movable, mutableMapOf())
         tankType.onSharedUpdate?.invoke(movable)
     }
 }

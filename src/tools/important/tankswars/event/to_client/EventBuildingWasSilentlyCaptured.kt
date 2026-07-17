@@ -40,7 +40,6 @@ class EventBuildingWasSilentlyCaptured(
 
         capturedTank!!.team = capturingTank?.team
 
-        TanksWars.buildingProperties.putIfAbsent(capturedTank!!, mutableMapOf())
         TanksWars.buildingProperties[capturedTank]!!["timeSinceCapture"] = 0.0
     }
 
