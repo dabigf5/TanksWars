@@ -15,7 +15,7 @@ import tools.important.tankswars.util.writeString
  * issues a command to their nearby soldier teammates, or whenever a tank issues a callout
  * (such as an engineer announcing that it is building a sentry).
  * @see tools.important.tankswars.core.CommandingSystem
- * @see tools.important.tankswars.tank.TankSoldierEngineer
+ * @see tools.important.tankswars.twtank.tank.TankSoldierEngineer
  */
 class EventBattleMessage(
     var message: BattleMessage? = null

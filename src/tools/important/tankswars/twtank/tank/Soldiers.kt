@@ -1,4 +1,4 @@
-package tools.important.tankswars.tank
+package tools.important.tankswars.twtank.tank
 
 import basewindow.Color
 import tanks.Drawing
@@ -6,19 +6,18 @@ import tanks.Game
 import tanks.Movable
 import tanks.Panel
 import tanks.Team
-import tanks.bullet.Bullet
-import tanks.network.event.EventBulletDestroyed
 import tanks.network.event.EventTankRemove
 import tanks.network.event.EventTankUpdateHealth
 import tanks.tank.Tank
 import tanks.tank.TankAIControlled
-import tools.important.tankswars.building.TwTankType
-import tools.important.tankswars.building.spawnTwTank
-import tools.important.tankswars.building.tank.TankBuilding
+import tools.important.tankswars.twtank.TwTankType
+import tools.important.tankswars.twtank.spawnTwTank
 import tools.important.tankswars.core.BattleMessage
 import tools.important.tankswars.core.BattleMessageSystem
 import tools.important.tankswars.core.SharedSystem
+import tools.important.tankswars.util.getTeamColorOrGray
 import tools.important.tankswars.util.isDeadForReal
+import kotlin.collections.iterator
 import kotlin.math.min
 
 
@@ -134,15 +133,16 @@ class TankSoldierEngineer(name: String, x: Double, y: Double, angle: Double) : T
         health = 1.0
     }
 
-    private companion object { // why does this exist? because enum entries are null for some reason on the top level
+    companion object { // why does this exist? because enum entries are null for some reason on the top level
         const val ENGINEER_MAX_METAL = 200
         const val ENGINEER_CALLOUT_TIME = 150.0
         const val ENGINEER_REPAIR_COOLDOWN = 50.0
         const val ENGINEER_BUILD_COOLDOWN = 25.0
         const val ENGINEER_MAX_METAL_SPENT_REPAIR = 50
-        const val ENGINEER_REPAIR_RANGE = Game.tile_size * 2
+        const val ENGINEER_REPAIR_RADIUS = Game.tile_size * 2
         val engineerMetalCosts = mapOf(
-            TwTankType.SENTRY to 130
+            TwTankType.SENTRY to 130,
+            TwTankType.DISPENSER to 100
         )
         val engineerBuildSuffixes = listOf(
             " coming right up!",
@@ -155,10 +155,6 @@ class TankSoldierEngineer(name: String, x: Double, y: Double, angle: Double) : T
     val built = mutableMapOf<TwTankType, TankBuilding>()
 
     fun tryBuild(buildable: TwTankType) {
-        if (SharedSystem.getPropertyOrNull(this, "metal") == null) {
-            SharedSystem.broadcastPropertyUpdate(this, "metal", ENGINEER_MAX_METAL)
-        }
-
         val metal = SharedSystem.getInt(this, "metal")
 
         val metalCost = engineerMetalCosts[buildable]!!
@@ -168,7 +164,7 @@ class TankSoldierEngineer(name: String, x: Double, y: Double, angle: Double) : T
             val building = spawnTwTank(buildable, posX, posY) {
                 it.team = team
             } as TankBuilding
-            SharedSystem.broadcastPropertyUpdate(this, "metal", metal - metalCost)
+            SharedSystem.broadcastSetProperty(this, "metal", metal - metalCost)
             val callout = "${buildable.buildingProperties!!.displayName}${engineerBuildSuffixes.random()}"
 
             BattleMessageSystem.broadcastMessage(BattleMessage(callout, this, remainingTime = ENGINEER_CALLOUT_TIME))
@@ -179,7 +175,7 @@ class TankSoldierEngineer(name: String, x: Double, y: Double, angle: Double) : T
 
     fun tryRepair(tank: TankBuilding) {
         if (!Team.isAllied(this, tank)) return
-        if (distanceBetween(this, tank) > ENGINEER_REPAIR_RANGE) return
+        if (distanceBetween(this, tank) > ENGINEER_REPAIR_RADIUS) return
         if (tank.health >= tank.baseHealth) return
         val currentMetal = SharedSystem.getInt(this, "metal")
         if (currentMetal <= 0) return
@@ -193,14 +189,21 @@ class TankSoldierEngineer(name: String, x: Double, y: Double, angle: Double) : T
         tank.health = min(tank.health + amountHealed, tank.baseHealth)
         Game.eventsOut.add(EventTankUpdateHealth(tank))
         BattleMessageSystem.broadcastMessage(BattleMessage("+$amountHealed", tank))
-        SharedSystem.broadcastPropertyUpdate(this, "metal", finalMetal)
+        SharedSystem.broadcastSetProperty(this, "metal", finalMetal)
         repairCooldown = ENGINEER_REPAIR_COOLDOWN
     }
 
     override fun update() {
+        SharedSystem.broadcastSetPropertyIfNull(this, "metal", ENGINEER_MAX_METAL)
+
+//        if (built[TwTankType.DISPENSER] == null && SharedSystem.getInt(this, "metal") < 100) {
+//
+//        }
+        
         if (buildCooldown > 0) {
             buildCooldown -= Panel.frameFrequency
         } else {
+            tryBuild(TwTankType.DISPENSER)
             tryBuild(TwTankType.SENTRY)
         }
 
@@ -220,10 +223,14 @@ class TankSoldierEngineer(name: String, x: Double, y: Double, angle: Double) : T
                 Game.eventsOut.add(EventTankRemove(building.value, true))
             }
         } else {
+            val markedForRemoval = mutableSetOf<TwTankType>()
             for (building in built) {
                 if (building.value.isDeadForReal) {
-                    built.remove(building.key)
+                    markedForRemoval.add(building.key)
                 }
+            }
+            for (buildingType in markedForRemoval) {
+                built.remove(buildingType)
             }
         }
 
@@ -231,7 +238,7 @@ class TankSoldierEngineer(name: String, x: Double, y: Double, angle: Double) : T
     }
 }
 
-val engineerSharedDraw = fun(tank: Tank) {
+val drawMetalCount = fun(tank: Tank) {
     val drawing = Drawing.drawing
 
     val metal = SharedSystem.getIntOrNull(tank, "metal") ?: return
@@ -240,5 +247,25 @@ val engineerSharedDraw = fun(tank: Tank) {
 
     drawing.setColor(teamColor.red, teamColor.green, teamColor.blue)
     drawing.setFontSize(25.0)
-    drawing.drawText(tank.posX, tank.posY - tank.size, "$metal metal")
+    drawing.drawText(tank.posX, tank.posY + tank.size, "$metal metal")
+}
+
+val engineerSharedDraw = fun(tank: Tank) {
+    val metal = SharedSystem.getIntOrNull(tank, "metal") ?: return
+
+    drawMetalCount(tank)
+    val drawing = Drawing.drawing
+
+    if (metal == 0) {
+        drawing.setColor(getTeamColorOrGray(tank.team).also { it.alpha = 64.0 })
+    } else {
+        drawing.setColor(getTeamColorOrGray(tank.team).also { it.alpha = 128.0 })
+    }
+
+    drawing.drawOval(
+        tank.posX,
+        tank.posY,
+        TankSoldierEngineer.ENGINEER_REPAIR_RADIUS * 2,
+        TankSoldierEngineer.ENGINEER_REPAIR_RADIUS * 2
+    )
 }

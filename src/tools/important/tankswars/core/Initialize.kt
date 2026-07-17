@@ -2,11 +2,11 @@ package tools.important.tankswars.core
 
 import tanks.Game.registerTank
 import tanks.tank.Tank
-import tools.important.tankswars.building.TwTankType
+import tools.important.tankswars.twtank.TwTankType
 import tools.important.tankswars.event.to_client.*
 import tools.important.tankswars.event.to_server.EventIssueCommand
 import tools.important.tankswars.tank.TankFiller
-import tools.important.tankswars.tank.TankSoldierEngineer
+import tools.important.tankswars.twtank.tank.TankSoldierEngineer
 import tanks.network.NetworkEventMap.register as registerNetworkEvent
 
 private fun registerTank0W(tankClass: Class<out Tank>, name: String) = registerTank(tankClass, name, 0.0)

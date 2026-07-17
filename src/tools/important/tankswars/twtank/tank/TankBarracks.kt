@@ -1,7 +1,6 @@
-package tools.important.tankswars.building.tank
+package tools.important.tankswars.twtank.tank
 
 import tanks.tank.Tank
-import tools.important.tankswars.tank.TankSoldier
 
 class TankBarracks(name: String, x: Double, y: Double, angle: Double) : TankBuilding(
     name,

@@ -4,7 +4,7 @@ import io.netty.buffer.ByteBuf
 import tanks.gui.screen.ScreenPartyLobby
 import tanks.network.event.PersonalEvent
 import tanks.tank.Tank
-import tools.important.tankswars.building.TwTankType
+import tools.important.tankswars.twtank.TwTankType
 import tools.important.tankswars.core.News
 import tools.important.tankswars.core.SharedSystem
 import tools.important.tankswars.util.sendCaptureMessage

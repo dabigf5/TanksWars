@@ -1,14 +1,9 @@
-package tools.important.tankswars.building
+package tools.important.tankswars.twtank
 
 import tanks.Game
 import tanks.tank.Tank
-import tools.important.tankswars.building.tank.*
 import tools.important.tankswars.core.News
-import tools.important.tankswars.tank.TankSoldier
-import tools.important.tankswars.tank.TankSoldierCaptain
-import tools.important.tankswars.tank.TankSoldierDefender
-import tools.important.tankswars.tank.TankSoldierEngineer
-import tools.important.tankswars.tank.engineerSharedDraw
+import tools.important.tankswars.twtank.tank.*
 
 /**
  * A class defining building capture behavior.
@@ -217,6 +212,19 @@ enum class TwTankType(
         description = "An armored sentry gun that will fire at enemy tanks in sight",
         tankClass = TankSentry::class.java,
     ),
+    DISPENSER(
+        buildingProperties = BuildingProperties(
+            displayName = "Dispenser",
+            health = 4.0,
+
+            stationary = true,
+        ),
+
+        registryName = "tw_dispenser",
+        description = "A dispenser that will heal nearby tanks",
+        tankClass = TankDispenser::class.java,
+        onSharedDraw = dispenserSharedDraw,
+    )
     ;
 
     companion object {

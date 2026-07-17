@@ -9,7 +9,7 @@ import tanks.gui.screen.ScreenGame
 import tanks.gui.screen.ScreenPartyLobby
 import tanks.tank.Tank
 import tools.important.tankswars.event.to_server.EventIssueCommand
-import tools.important.tankswars.tank.TankCommandable
+import tools.important.tankswars.twtank.tank.TankCommandable
 import kotlin.math.sqrt
 
 enum class CommandType(

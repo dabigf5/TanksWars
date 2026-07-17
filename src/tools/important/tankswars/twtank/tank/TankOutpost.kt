@@ -1,9 +1,8 @@
-package tools.important.tankswars.building.tank
+package tools.important.tankswars.twtank.tank
 
 import tanks.Game
 import tanks.network.event.EventTankRemove
 import tanks.tank.Tank
-import tools.important.tankswars.tank.TankSoldierDefender
 
 class TankOutpost(name: String, x: Double, y: Double, angle: Double) : TankBuilding(
     name,

@@ -6,8 +6,8 @@ import tanks.network.event.EventTankRemove
 import tanks.tank.Explosion
 import tanks.tank.Mine
 import tanks.tank.Tank
-import tools.important.tankswars.building.tank.TankBuilding
-import tools.important.tankswars.building.tank.TankKeepBase
+import tools.important.tankswars.twtank.tank.TankBuilding
+import tools.important.tankswars.twtank.tank.TankKeepBase
 import tools.important.tankswars.util.broadcastFleeMessage
 
 fun flee(team: Team, source: Tank? = null) {

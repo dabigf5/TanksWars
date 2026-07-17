@@ -9,8 +9,8 @@ import tanks.gui.screen.ScreenPartyHost
 import tanks.gui.screen.ScreenPartyLobby
 import tanks.gui.screen.leveleditor.ScreenLevelEditorOverlay
 import tanks.tank.Tank
-import tools.important.tankswars.building.TwTankType
-import tools.important.tankswars.building.tank.TankBuilding
+import tools.important.tankswars.twtank.TwTankType
+import tools.important.tankswars.twtank.tank.TankBuilding
 import tools.important.tankswars.event.to_client.EventUpdateSharedProperty
 import tools.important.tankswars.lastScreen
 import tools.important.tankswars.util.component1
@@ -19,7 +19,8 @@ import tools.important.tankswars.util.component3
 import tools.important.tankswars.util.getTeamColorOrGray
 
 object SharedSystem {
-    private val sharedProperties: MutableMap<Tank, MutableMap<String, Any>> = mutableMapOf()
+    // networkid to properties
+    private val sharedProperties: MutableMap<Int, MutableMap<String, Any>> = mutableMapOf()
 
     fun sharedUpdate() {
         if (Game.screen != lastScreen) sharedProperties.clear()
@@ -41,9 +42,9 @@ object SharedSystem {
         // no way to make it draw under the pause menu, this has to be done
         val screen = Game.screen
         if (!(screen is ScreenGame && (screen.paused) ||
-                            screen is ScreenLevelEditorOverlay ||
-                            screen is IConditionalOverlayScreen ||
-                            screen is ScreenEditorTank)
+                    screen is ScreenLevelEditorOverlay ||
+                    screen is IConditionalOverlayScreen ||
+                    screen is ScreenEditorTank)
         ) {
             sharedDrawTanks()
             CommandingSystem.draw()
@@ -61,7 +62,6 @@ object SharedSystem {
             val tankType = TwTankType.getTankTypeFromName(movable.name) ?: continue
 
             tankType.onSharedUpdate?.invoke(movable)
-            sharedProperties.putIfAbsent(movable, mutableMapOf())
         }
     }
 
@@ -110,15 +110,24 @@ object SharedSystem {
     /**
      * A utility function to update a property of a building and inform all clients of this property update
      */
-    fun broadcastPropertyUpdate(tank: Tank, propertyName: String, value: Any?) {
+    fun broadcastSetProperty(tank: Tank, propertyName: String, value: Any?) {
         setProperty(tank, propertyName, value)
         if (ScreenPartyHost.isServer) {
-            Game.eventsOut.add(EventUpdateSharedProperty(tank, propertyName, value?.javaClass, value))
+            Game.eventsOut.add(EventUpdateSharedProperty(tank.networkID, propertyName, value?.javaClass, value))
         }
     }
 
-    fun setProperty(tank: Tank, propertyName: String, value: Any?) {
-        val props = sharedProperties[tank]!!
+    private fun initializeProperties(tankId: Int) {
+        sharedProperties.putIfAbsent(tankId, mutableMapOf())
+    }
+
+    private fun initializeProperties(tank: Tank) {
+        sharedProperties.putIfAbsent(tank.networkID, mutableMapOf())
+    }
+
+    fun setProperty(tankId: Int, propertyName: String, value: Any?) {
+        initializeProperties(tankId)
+        val props = sharedProperties[tankId]!!
         if (value == null) {
             props.remove(propertyName)
             return
@@ -126,13 +135,36 @@ object SharedSystem {
         props[propertyName] = value
     }
 
+    fun setProperty(tank: Tank, propertyName: String, value: Any?) {
+        initializeProperties(tank)
+        val props = sharedProperties[tank.networkID]!!
+        if (value == null) {
+            props.remove(propertyName)
+            return
+        }
+        props[propertyName] = value
+    }
+
+    fun setPropertyIfNull(tank: Tank, propertyName: String, value: Any) {
+        if (getPropertyOrNull(tank, propertyName) == null) {
+            setProperty(tank, propertyName, value)
+        }
+    }
+
+    fun broadcastSetPropertyIfNull(tank: Tank, propertyName: String, value: Any) {
+        if (getPropertyOrNull(tank, propertyName) == null) {
+            broadcastSetProperty(tank, propertyName, value)
+        }
+    }
+
     fun <T> getPropertyOrDefault(tank: Tank, propertyName: String, init: T): T {
         @Suppress("UNCHECKED_CAST")
-        return sharedProperties[tank]!![propertyName] as T? ?: init
+        return sharedProperties[tank.networkID]!![propertyName] as T? ?: init
     }
 
     fun getPropertyOrNull(tank: Tank, propertyName: String): Any? {
-        return sharedProperties[tank]!![propertyName]
+        initializeProperties(tank)
+        return sharedProperties[tank.networkID]!![propertyName]
     }
 
     fun getProperty(tank: Tank, propertyName: String): Any {

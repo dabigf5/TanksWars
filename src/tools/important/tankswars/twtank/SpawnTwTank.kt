@@ -1,4 +1,4 @@
-package tools.important.tankswars.building
+package tools.important.tankswars.twtank
 
 import tanks.Game
 import tanks.tank.Tank

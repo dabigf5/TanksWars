@@ -1,4 +1,4 @@
-package tools.important.tankswars.building.tank
+package tools.important.tankswars.twtank.tank
 
 import basewindow.Color
 import tanks.Game
@@ -11,7 +11,7 @@ import tanks.tank.Explosion
 import tanks.tank.Mine
 import tanks.tank.Tank
 import tanks.tank.TankAIControlled
-import tools.important.tankswars.building.TwTankType
+import tools.important.tankswars.twtank.TwTankType
 import tools.important.tankswars.core.News
 import tools.important.tankswars.core.SharedSystem
 import tools.important.tankswars.event.to_client.EventBuildingWasCaptured

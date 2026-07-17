@@ -7,7 +7,7 @@ import tanks.gui.screen.ScreenPartyHost
 import tanks.tank.Tank
 import tanks.tank.TankPlayer
 import tanks.tank.TankPlayerRemote
-import tools.important.tankswars.building.TwTankType
+import tools.important.tankswars.twtank.TwTankType
 import tools.important.tankswars.core.News
 import tools.important.tankswars.core.NewsMessageType
 import tools.important.tankswars.event.to_client.EventBuildingWasDestroyed

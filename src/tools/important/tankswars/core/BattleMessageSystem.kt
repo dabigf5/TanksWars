@@ -56,7 +56,6 @@ object BattleMessageSystem {
             if (message.speakerCircleRadius > 0.0) {
                 Drawing.drawing.setColor(ordererTeam.teamColor.red, ordererTeam.teamColor.green, ordererTeam.teamColor.blue, 175.0 * transparencyMultiplier)
                 Drawing.drawing.fillOval(orderer.posX, orderer.posY, message.speakerCircleRadius * 2.0, message.speakerCircleRadius * 2.0)
-//                Drawing.drawing.fillOval(orderer.posX, orderer.posY, COMMANDING_RADIUS * 2.0, COMMANDING_RADIUS * 2.0)
             }
 
             if (target != null) {

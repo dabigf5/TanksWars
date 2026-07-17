@@ -2,7 +2,6 @@ package tools.important.tankswars.event.to_client
 
 import io.netty.buffer.ByteBuf
 import tanks.network.event.PersonalEvent
-import tanks.tank.Tank
 import tools.important.tankswars.core.SharedSystem
 import tools.important.tankswars.util.readString
 import tools.important.tankswars.util.writeString
@@ -47,27 +46,28 @@ fun readArbitraryClass(buf: ByteBuf, className: String): Any? {
 
 /**
  * An event which tells clients to update a key in a tank's properties in their `TanksWars.buildingProperties`
+ * Uses direct ID storage rather than tank storage because of a strange race condition where some tanks are unavailable on the first update
  */
 class EventUpdateSharedProperty(
-    var tank: Tank? = null,
+    var tankId: Int? = null,
     var propertyName: String? = null,
     var propertyType: Class<*>? = null,
     var propertyValue: Any? = null,
 ) : PersonalEvent() {
     override fun write(buf: ByteBuf) {
-        buf.writeInt(tank!!.networkID)
+        buf.writeInt(tankId!!)
         buf.writeString(propertyName!!)
         buf.writeString(propertyType!!.name)
         writeArbitraryClass(buf, propertyValue)
     }
 
     override fun read(buf: ByteBuf) {
-        tank = Tank.idMap[buf.readInt()]
+        tankId = buf.readInt()
         propertyName = buf.readString()
         propertyValue = readArbitraryClass(buf, buf.readString())
     }
 
     override fun execute() {
-        SharedSystem.setProperty(tank!!, propertyName!!, propertyValue)
+        SharedSystem.setProperty(tankId!!, propertyName!!, propertyValue)
     }
 }

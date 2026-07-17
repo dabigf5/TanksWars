@@ -1,4 +1,4 @@
-package tools.important.tankswars.building.tank
+package tools.important.tankswars.twtank.tank
 
 import tanks.Drawing
 import tanks.Game
@@ -8,7 +8,6 @@ import tanks.tank.Tank
 import tools.important.tankswars.core.SharedSystem
 import tools.important.tankswars.core.flee
 import tools.important.tankswars.event.to_client.EventTankEmblemUpdate
-import tools.important.tankswars.tank.TankSoldierDefender
 import tools.important.tankswars.util.component1
 import tools.important.tankswars.util.component2
 import tools.important.tankswars.util.component3
