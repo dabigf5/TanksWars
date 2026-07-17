@@ -105,7 +105,7 @@ abstract class TankBuilding(name: String, x: Double, y: Double, angle: Double) :
             spawnChance = if (team != null) typeSpawnChance else 0.0
         }
 
-        if (destroy) {
+        if (destroy && destroyTimer <= 0) {
             twOnDeath()
         }
 

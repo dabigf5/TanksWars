@@ -27,6 +27,9 @@ abstract class TwTank(
     angle,
     ai
 ) {
+    /**
+     * Function called by TanksWars tanks whenever they die
+     */
     protected fun twOnDeath() {
         SharedSystem.broadcastClearProperties(this)
     }
