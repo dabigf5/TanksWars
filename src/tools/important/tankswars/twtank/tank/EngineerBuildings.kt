@@ -108,6 +108,8 @@ class TankDispenser(name: String, x: Double, y: Double, angle: Double) : TankBui
     override fun update() {
         super.update()
 
+        if (destroy) return
+
         SharedSystem.broadcastSetPropertyIfNull(this, "metal", 0)
 
         if (metalRegenCooldown > 0) {

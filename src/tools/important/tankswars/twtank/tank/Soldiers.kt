@@ -202,15 +202,10 @@ class TankSoldierEngineer(name: String, x: Double, y: Double, angle: Double) : T
 
     override fun update() {
         super.update()
-        SharedSystem.broadcastSetPropertyIfNull(this, "metal", ENGINEER_MAX_METAL)
 
         // if the engineer has no dispenser and can't afford one, just die;
         // it will only be a liability to its team without a metal supply, as it lingers on with a crumbling nest that could be
         // replaced by another engineer
-        if (built[TwTankType.DISPENSER] == null && SharedSystem.getInt(this, "metal") < engineerMetalCosts[TwTankType.DISPENSER]!!) {
-            destroy = true
-            Game.eventsOut.add(EventTankRemove(this, true))
-        }
 
         if (destroy || isDeadForReal) {
             for (building in built) {
@@ -229,6 +224,13 @@ class TankSoldierEngineer(name: String, x: Double, y: Double, angle: Double) : T
             }
         }
 
+        if (destroy) return
+        SharedSystem.broadcastSetPropertyIfNull(this, "metal", ENGINEER_MAX_METAL)
+
+        if (built[TwTankType.DISPENSER] == null && SharedSystem.getInt(this, "metal") < engineerMetalCosts[TwTankType.DISPENSER]!!) {
+            destroy = true
+            Game.eventsOut.add(EventTankRemove(this, true))
+        }
         if (destroy) return
 
         if (buildCooldown > 0) {
