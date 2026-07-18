@@ -68,8 +68,13 @@ class TankDispenser(name: String, x: Double, y: Double, angle: Double) : TankBui
         const val DISPENSER_METAL_REGEN_TIME = 200.0
         const val DISPENSER_METAL_PER_TRANSFER = 40
         const val DISPENSER_METAL_PER_REGEN = 40
-        const val DISPENSER_HEALTH_REGEN_PER_FRAME = 1.0/10000.0
+        // dispenser health regen builds up over time
+        const val DISPENSER_TIME_TO_REACH_MAX_HEALTH_REGEN = 600.0
+        const val DISPENSER_MAX_HEALTH_REGEN_PER_FRAME = 1.0/1000.0
     }
+
+    // tank to how long it has been in range
+    val inRange = mutableMapOf<Tank, Double>()
 
     // slightly longer time for the first regen
     var metalRegenCooldown = DISPENSER_METAL_REGEN_TIME * 1.5
@@ -122,9 +127,25 @@ class TankDispenser(name: String, x: Double, y: Double, angle: Double) : TankBui
         for (movable in Game.movables) {
             if (movable !is Tank) continue
             if (movable is TankBuilding) continue // do not heal buildings
-            if (!Team.isAllied(movable, this)) continue
-            if (distanceBetween(movable, this) > DISPENSER_RADIUS) continue
-            movable.health = min(movable.baseHealth, movable.health + DISPENSER_HEALTH_REGEN_PER_FRAME)
+            if (!Team.isAllied(movable, this)) {
+                inRange.remove(movable)
+                continue
+            }
+            if (distanceBetween(movable, this) > DISPENSER_RADIUS) {
+                inRange.remove(movable)
+                continue
+            }
+            if (inRange.contains(movable)) {
+                inRange[movable] = inRange[movable]!! + Panel.frameFrequency
+            } else {
+                inRange[movable] = 0.0
+            }
+            val newTimeInRange = inRange[movable]!!
+            val buildup = min(1.0, newTimeInRange / DISPENSER_TIME_TO_REACH_MAX_HEALTH_REGEN)
+
+            val healthRegened = DISPENSER_MAX_HEALTH_REGEN_PER_FRAME * buildup
+
+            movable.health = min(movable.baseHealth, movable.health + healthRegened)
             Game.eventsOut.add(EventTankUpdateHealth(movable))
 
             if (movable is TankSoldierEngineer) {
