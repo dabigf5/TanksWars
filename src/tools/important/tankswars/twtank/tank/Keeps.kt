@@ -60,7 +60,7 @@ class TankKeepBase(name: String, x: Double, y: Double, angle: Double) : TankKeep
         set(v) {
             field = v
             emblem = if (v) "emblems/star.png" else "emblems/square.png"
-            Game.eventsOut.add(EventTankEmblemUpdate(this, emblem, emblemColor.red, emblemColor.green, emblemColor.blue))
+            Game.eventsOut.add(EventTankEmblemUpdate(this.networkID, emblem, emblemColor.red, emblemColor.green, emblemColor.blue))
         }
 
     override fun capture(capturingTank: Tank?) {
@@ -86,7 +86,7 @@ val keepSharedDraw = fun(tank: Tank) {
 
     if (tank.team == null) return
 
-    val timeSinceCapture = SharedSystem.getDouble(tank, "timeSinceCapture")
+    val timeSinceCapture = SharedSystem.getDoubleOrNull(tank, "timeSinceCapture") ?: return
 
     val circleSize = (timeSinceCapture / TankKeep.MAX_TIME_SINCE_CAPTURE) * TankKeep.KEEP_SQUARE_SIZE
     val circleOpacity = 200.0 - ((timeSinceCapture / TankKeep.MAX_TIME_SINCE_CAPTURE) * 200.0)

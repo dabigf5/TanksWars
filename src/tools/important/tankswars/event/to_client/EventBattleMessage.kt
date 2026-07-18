@@ -18,37 +18,51 @@ import tools.important.tankswars.util.writeString
  * @see tools.important.tankswars.twtank.tank.TankSoldierEngineer
  */
 class EventBattleMessage(
-    var message: BattleMessage? = null
+    var text: String? = null,
+    var time: Double? = null,
+    var speakerId: Int? = null,
+    var targetId: Int? = null,
+    var speakerCircleRadius: Double? = null
 ) : PersonalEvent() {
+    companion object {
+        fun fromMessage(message: BattleMessage): EventBattleMessage {
+            return EventBattleMessage(
+                message.text,
+                message.remainingTime,
+                message.speaker.networkID,
+                message.visualTarget?.networkID ?: NIL_ID,
+                message.speakerCircleRadius
+            )
+        }
+    }
+    fun toMessage(): BattleMessage {
+        return BattleMessage(
+            text!!,
+            Tank.idMap[speakerId!!]!!,
+            Tank.idMap[targetId!!],
+            time!!,
+            speakerCircleRadius!!
+        )
+    }
+
     override fun write(buf: ByteBuf) {
-        buf.writeString(message!!.text)
-        buf.writeDouble(message!!.remainingTime)
-        buf.writeInt(message!!.speaker.networkID)
-        buf.writeInt(message!!.visualTarget?.networkID ?: NIL_ID)
-        buf.writeDouble(message!!.speakerCircleRadius)
+        buf.writeString(text!!)
+        buf.writeDouble(time!!)
+        buf.writeInt(speakerId!!)
+        buf.writeInt(targetId!!)
+        buf.writeDouble(speakerCircleRadius!!)
     }
 
     override fun read(buf: ByteBuf) {
-        val messageText = buf.readString()
-        val remainingTime = buf.readDouble()
-        val speaker = Tank.idMap[buf.readInt()]!!
-
-        val visualTargetId = buf.readInt()
-        val visualTarget = if(visualTargetId != NIL_ID) Tank.idMap[visualTargetId] else null
-
-        val speakerCircleRadius = buf.readDouble()
-
-        message = BattleMessage(
-            messageText,
-            speaker,
-            visualTarget,
-            remainingTime,
-            speakerCircleRadius
-        )
+        text = buf.readString()
+        time = buf.readDouble()
+        speakerId = buf.readInt()
+        targetId = buf.readInt()
+        speakerCircleRadius = buf.readDouble()
     }
 
     override fun execute() {
         if (!ScreenPartyLobby.isClient) return
-        BattleMessageSystem.recentMessages.add(message!!)
+        BattleMessageSystem.recentMessages.add(toMessage())
     }
 }

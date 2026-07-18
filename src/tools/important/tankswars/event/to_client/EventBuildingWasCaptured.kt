@@ -14,31 +14,31 @@ import tools.important.tankswars.util.sendCaptureMessage
  * This will cause the sending of a news message, the sound effect, and a change of team of the captured building.
  */
 class EventBuildingWasCaptured(
-    var capturedTank: Tank? = null,
-    var capturingTank: Tank? = null
+    var capturedTankId: Int? = null,
+    var capturingTankId: Int? = null
 ) : PersonalEvent() {
     override fun write(buf: ByteBuf) {
-        buf.writeInt(capturedTank!!.networkID)
-        buf.writeInt(capturingTank!!.networkID)
+        buf.writeInt(capturedTankId!!)
+        buf.writeInt(capturingTankId!!)
     }
 
     override fun read(buf: ByteBuf) {
-        val capturedId = buf.readInt()
-        val capturingId = buf.readInt()
-
-        capturedTank = Tank.idMap[capturedId]
-        capturingTank = Tank.idMap[capturingId]
+        capturedTankId = buf.readInt()
+        capturingTankId = buf.readInt()
     }
 
     override fun execute() {
         if (!ScreenPartyLobby.isClient) return
+        val capturedTank = Tank.idMap[capturedTankId]
+        val capturingTank = Tank.idMap[capturingTankId]
+
         News.sendCaptureMessage(capturedTank!!, capturingTank!!)
 
-        val type = TwTankType.getTankTypeFromName(capturedTank!!.name)!!
-        type.buildingProperties?.captureProperties?.onSharedCapture?.invoke(capturedTank!!)
+        val type = TwTankType.getTankTypeFromName(capturedTank.name)!!
+        type.buildingProperties?.captureProperties?.onSharedCapture?.invoke(capturedTank)
 
-        capturedTank!!.team = capturingTank!!.team
+        capturedTank.team = capturingTank.team
 
-        SharedSystem.setProperty(capturedTank!!, "timeSinceCapture", 0.0)
+        SharedSystem.setProperty(capturedTank, "timeSinceCapture", 0.0)
     }
 }

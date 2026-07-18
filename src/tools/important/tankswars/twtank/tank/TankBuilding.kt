@@ -13,6 +13,7 @@ import tanks.tank.Tank
 import tools.important.tankswars.twtank.TwTankType
 import tools.important.tankswars.core.News
 import tools.important.tankswars.core.SharedSystem
+import tools.important.tankswars.event.NIL_ID
 import tools.important.tankswars.event.to_client.EventBuildingWasCaptured
 import tools.important.tankswars.event.to_client.EventBuildingWasSilentlyCaptured
 import tools.important.tankswars.twtank.TwTank
@@ -129,7 +130,7 @@ abstract class TankBuilding(name: String, x: Double, y: Double, angle: Double) :
 
     fun silentCapture(capturingTank: Tank?) {
         serversideCapture(capturingTank)
-        Game.eventsOut.add(EventBuildingWasSilentlyCaptured(this, capturingTank))
+        Game.eventsOut.add(EventBuildingWasSilentlyCaptured(this.networkID, capturingTank?.networkID ?: NIL_ID))
     }
 
     open fun capture(capturingTank: Tank?) {
@@ -139,6 +140,6 @@ abstract class TankBuilding(name: String, x: Double, y: Double, angle: Double) :
         serversideCapture(capturingTank)
 
         val eventsOut = Game.eventsOut
-        eventsOut.add(EventBuildingWasCaptured(this, capturingTank))
+        eventsOut.add(EventBuildingWasCaptured(this.networkID, capturingTank?.networkID ?: NIL_ID))
     }
 }

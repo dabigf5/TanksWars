@@ -9,6 +9,9 @@ import tools.important.tankswars.util.*
 
 /**
  * An event that is sent by the server when a tank is defeated.
+ * This will be sent only whenever a tank considered notable enough
+ * is destroyed.
+ * @see tools.important.tankswars.core.shouldNotifyDeath
  */
 class EventTankDefeatMessage(
     var name: String? = null,

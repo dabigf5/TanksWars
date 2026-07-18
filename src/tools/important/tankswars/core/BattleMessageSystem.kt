@@ -25,7 +25,7 @@ object BattleMessageSystem {
 
     fun broadcastMessage(message: BattleMessage) {
         recentMessages.add(message)
-        Game.eventsOut.add(EventBattleMessage(message))
+        Game.eventsOut.add(EventBattleMessage.fromMessage(message))
     }
 
     fun update() {

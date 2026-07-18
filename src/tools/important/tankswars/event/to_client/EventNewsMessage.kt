@@ -18,20 +18,21 @@ import tools.important.tankswars.util.writeString
  */
 class EventNewsMessage(
     var message: String? = null,
-    var messageType: NewsMessageType? = null
+    var messageTypeOrdinal: Int? = null
 ) : PersonalEvent() {
 
     override fun write(buf: ByteBuf) {
         buf.writeString(message!!)
-        buf.writeInt(messageType!!.ordinal)
+        buf.writeInt(messageTypeOrdinal!!)
     }
 
     override fun read(buf: ByteBuf) {
         message = buf.readString()
-        messageType = NewsMessageType.entries.getOrNull(buf.readInt()) ?: NewsMessageType.CAPTURE_NEUTRAL
+        messageTypeOrdinal = buf.readInt()
     }
 
     override fun execute() {
-        if (ScreenPartyLobby.isClient) News.sendMessage(message!!, messageType!!)
+        val messageType = NewsMessageType.entries.getOrNull(messageTypeOrdinal!!) ?: NewsMessageType.CAPTURE_NEUTRAL
+        if (ScreenPartyLobby.isClient) News.sendMessage(message!!, messageType)
     }
 }

@@ -43,7 +43,7 @@ object News {
     @Suppress("Unused") // im going to use this one day intellij shutup
     fun broadcastMessage(text: String, type: NewsMessageType) {
         sendMessage(text, type)
-        Game.eventsOut.add(EventNewsMessage(text, type))
+        Game.eventsOut.add(EventNewsMessage(text, type.ordinal))
     }
 
     fun update() {

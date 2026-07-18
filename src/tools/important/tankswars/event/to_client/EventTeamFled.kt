@@ -15,7 +15,7 @@ import tools.important.tankswars.util.writeString
 /**
  * An event that will be sent when a team flees the battlefield.
  *
- * This event only handles the news message being sent. (can't be done with `EventNewsMessage` due to the variable sound effect).
+ * This event only handles the news message being sent. (can't be done with `EventNewsMessage` due to the sound effect being fixed with that event).
  *
  * This event will not handle the buildings' silent captures; that is handled separately via sending a bunch of `EventBuildingWasSilentlyCaptured`s.
  *

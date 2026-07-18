@@ -8,7 +8,9 @@ import tools.important.tankswars.core.News
 import tools.important.tankswars.util.*
 
 /**
- * An event that is sent by the server when a building is destroyed.
+ * An event that is sent by the server when a destructible building is destroyed.
+ * Its only function is to send a message in the News.
+ * @see tools.important.tankswars.core.News
  */
 class EventBuildingWasDestroyed(
     var name: String? = null,
