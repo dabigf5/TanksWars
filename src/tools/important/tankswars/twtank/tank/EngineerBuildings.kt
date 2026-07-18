@@ -68,6 +68,7 @@ class TankDispenser(name: String, x: Double, y: Double, angle: Double) : TankBui
         const val DISPENSER_METAL_REGEN_TIME = 200.0
         const val DISPENSER_METAL_PER_TRANSFER = 40
         const val DISPENSER_METAL_PER_REGEN = 40
+        const val DISPENSER_HEALTH_REGEN_PER_FRAME = 1.0/10000.0
     }
 
     // slightly longer time for the first regen
@@ -123,7 +124,7 @@ class TankDispenser(name: String, x: Double, y: Double, angle: Double) : TankBui
             if (movable is TankBuilding) continue // do not heal buildings
             if (!Team.isAllied(movable, this)) continue
             if (distanceBetween(movable, this) > DISPENSER_RADIUS) continue
-            movable.health = min(movable.baseHealth, movable.health + 0.01)
+            movable.health = min(movable.baseHealth, movable.health + DISPENSER_HEALTH_REGEN_PER_FRAME)
             Game.eventsOut.add(EventTankUpdateHealth(movable))
 
             if (movable is TankSoldierEngineer) {
