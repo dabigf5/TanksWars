@@ -42,7 +42,7 @@ fun News.sendDestroyMessage(tank: Tank, destroyer: Tank?) {
     sendDestroyMessage(
         getTeamColorOrGray(tank.team), tank.name,
         getTeamNameFromDestroyer(destroyer), getTeamColorOrGray(destroyer?.team),
-        Team.isAllied(tank, destroyer)
+        Team.isAllied(Game.playerTank, tank)
     )
 }
 
