@@ -32,6 +32,7 @@ class TankSentry(name: String, x: Double, y: Double, angle: Double) : TankBuildi
         bulletItem!!.item.cooldownBase = 5.0
 
         enablePredictiveFiring = false
+        enableDefensiveFiring = true
 
         turretIdleSpeed = 0.04
         turretAimSpeed = 0.04

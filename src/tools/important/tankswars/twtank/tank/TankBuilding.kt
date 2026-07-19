@@ -65,7 +65,7 @@ abstract class TankBuilding(name: String, x: Double, y: Double, angle: Double) :
     }
 
     open fun isEligibleToCapture(capturer: Tank): Boolean {
-        return distanceBetween(capturer, this) < size * 2.0
+        return distanceBetween(capturer, this) < size * 8.0
     }
 
     override fun damage(amount: Double, source: GameObject?): Boolean {
