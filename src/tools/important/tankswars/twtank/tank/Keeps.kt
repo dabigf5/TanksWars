@@ -39,6 +39,14 @@ open class TankKeep(name: String, x: Double, y: Double, angle: Double) : TankBui
             Game.eventsOut.add(EventTankRemove(defender, true))
         }
     }
+
+    override fun isEligibleToCapture(capturer: Tank): Boolean {
+        // need to be within the keep square
+        return this.posX - KEEP_SQUARE_SIZE/2.0 <= capturer.posX &&
+                capturer.posX <= this.posX + KEEP_SQUARE_SIZE/2.0 &&
+                this.posY - KEEP_SQUARE_SIZE/2.0 <= capturer.posY &&
+                capturer.posY <= this.posY + KEEP_SQUARE_SIZE/2.0
+    }
 }
 
 class TankKeepBase(name: String, x: Double, y: Double, angle: Double) : TankKeep(

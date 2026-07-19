@@ -64,6 +64,10 @@ abstract class TankBuilding(name: String, x: Double, y: Double, angle: Double) :
         News.broadcastDestroyMessage(this, destroyer)
     }
 
+    open fun isEligibleToCapture(capturer: Tank): Boolean {
+        return distanceBetween(capturer, this) < size * 2.0
+    }
+
     override fun damage(amount: Double, source: GameObject?): Boolean {
         super.damage(amount, source)
 
@@ -93,7 +97,11 @@ abstract class TankBuilding(name: String, x: Double, y: Double, angle: Double) :
         }
 
         if (deadForReal || team == null) {
-            capture(sourceTank)
+            if (sourceTank != null && isEligibleToCapture(sourceTank)) {
+                capture(sourceTank)
+            } else {
+                voidDeath(health + amount)
+            }
         }
 
         return false
@@ -113,19 +121,24 @@ abstract class TankBuilding(name: String, x: Double, y: Double, angle: Double) :
         super.update()
     }
 
-    private fun serversideCapture(capturingTank: Tank?) {
-        health = type.buildingProperties!!.health
+    private fun voidDeath(newHealth: Double) {
+        health = newHealth
         destroy = false
-
-        team = capturingTank?.team
-
-        SharedSystem.setProperty(this, "timeSinceCapture", 0.0)
+        Game.eventsOut.add(EventTankUpdateHealth(this))
 
         val eventsOut = Game.eventsOut
         eventsOut.add(EventTankUpdateHealth(this))
 
         for (event in eventsOut)
             if (event is EventTankRemove && event.tank == networkID) eventsOut.remove(event)
+    }
+
+    private fun serversideCapture(capturingTank: Tank?) {
+        voidDeath(type.buildingProperties!!.health)
+
+        team = capturingTank?.team
+
+        SharedSystem.setProperty(this, "timeSinceCapture", 0.0)
     }
 
     fun silentCapture(capturingTank: Tank?) {
