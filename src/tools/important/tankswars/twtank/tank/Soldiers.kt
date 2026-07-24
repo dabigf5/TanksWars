@@ -183,7 +183,7 @@ class TankSoldierEngineer(name: String, x: Double, y: Double, angle: Double) : T
     fun tryRepair(tank: TankBuilding) {
         if (!Team.isAllied(this, tank)) return
         if (distanceBetween(this, tank) > ENGINEER_REPAIR_RADIUS) return
-        if (tank.health >= tank.baseHealth) return
+        if (tank.health >= tank.type.buildingProperties!!.health) return
         val currentMetal = SharedSystem.getInt(this, "metal")
         if (currentMetal <= 0) return
 
@@ -252,16 +252,20 @@ class TankSoldierEngineer(name: String, x: Double, y: Double, angle: Double) : T
     }
 }
 
-val drawMetalCount = fun(tank: Tank) {
+val drawTextBelow = fun(tank: Tank, text: String) {
     val drawing = Drawing.drawing
-
-    val metal = SharedSystem.getIntOrNull(tank, "metal") ?: return
 
     val teamColor = tank.team.teamColor
 
     drawing.setColor(teamColor.red, teamColor.green, teamColor.blue)
     drawing.setFontSize(25.0)
-    drawing.drawText(tank.posX, tank.posY + tank.size, "$metal metal")
+    drawing.drawText(tank.posX, tank.posY + tank.size, text)
+}
+
+val drawMetalCount = fun(tank: Tank) {
+    val metal = SharedSystem.getIntOrNull(tank, "metal") ?: return
+
+    drawTextBelow(tank, "$metal metal")
 }
 
 val engineerSharedDraw = fun(tank: Tank) {

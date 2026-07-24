@@ -33,7 +33,11 @@ data class BuildingProperties(
     val stationary: Boolean,
 
     /**
-     * The health value that is assigned to instances when spawned, and when captured.
+     * Whether `health` should be assigned to the tank's health on spawn
+     */
+    val assignHealthOnSpawn: Boolean = true,
+    /**
+     * The health value that is assigned to instances when spawned (if `assignHealthOnSpawn` is `true`), and when captured.
      */
     val health: Double = 1.0,
 
@@ -218,19 +222,20 @@ enum class TwTankType(
         buildingProperties = BuildingProperties(
             displayName = "Sentry Gun",
             health = 8.0,
-
+            assignHealthOnSpawn = false,
             stationary = true,
         ),
 
         registryName = "tw_sentry",
         description = "An armored sentry gun that will fire at enemy tanks in sight",
         tankClass = TankSentry::class.java,
+        onSharedDraw = sentrySharedDraw,
     ),
     DISPENSER(
         buildingProperties = BuildingProperties(
             displayName = "Dispenser",
             health = 4.0,
-
+            assignHealthOnSpawn = false,
             stationary = true,
         ),
 

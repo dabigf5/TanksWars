@@ -27,6 +27,7 @@ abstract class TwTank(
     angle,
     ai
 ) {
+    val type: TwTankType = TwTankType.getTankTypeFromClass(javaClass)!!
     /**
      * Function called by TanksWars tanks whenever they die
      */

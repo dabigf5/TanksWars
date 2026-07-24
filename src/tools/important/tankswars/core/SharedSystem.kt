@@ -191,6 +191,13 @@ object SharedSystem {
         return getPropertyOrNull(tank, propertyName)!!
     }
 
+    fun getBool(tank: Tank, propertyName: String): Boolean {
+        return getProperty(tank, propertyName) as Boolean
+    }
+    fun getBoolOrNull(tank: Tank, propertyName: String): Boolean? {
+        return getPropertyOrNull(tank, propertyName) as Boolean?
+    }
+
     fun getInt(tank: Tank, propertyName: String): Int {
         return getProperty(tank, propertyName) as Int
     }

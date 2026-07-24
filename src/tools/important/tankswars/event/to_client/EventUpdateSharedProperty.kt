@@ -20,6 +20,9 @@ fun writeArbitraryClass(buf: ByteBuf, any: Any?) {
         is String -> {
             buf.writeString(any)
         }
+        is Boolean -> {
+            buf.writeBoolean(any)
+        }
         else ->
             error("Unsupported class ${any.javaClass.name}")
     }
@@ -38,6 +41,9 @@ fun readArbitraryClass(buf: ByteBuf, className: String): Any? {
         }
         "java.lang.String" -> {
             return buf.readString()
+        }
+        "java.lang.Boolean" -> {
+            return buf.readBoolean()
         }
     }
 

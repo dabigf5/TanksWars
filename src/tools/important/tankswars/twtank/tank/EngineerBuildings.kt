@@ -8,17 +8,63 @@ import tanks.bullet.BulletEffect
 import tanks.network.event.EventTankUpdateHealth
 import tanks.tank.Tank
 import tools.important.tankswars.core.SharedSystem
+import tools.important.tankswars.twtank.tank.TankEngineerBuilding.Companion.CONSTRUCTING_TEXT
 import tools.important.tankswars.util.getTeamColorOrGray
 import kotlin.math.min
 
-class TankSentry(name: String, x: Double, y: Double, angle: Double) : TankBuilding(
+abstract class TankEngineerBuilding(name: String, x: Double, y: Double, angle: Double) : TankBuilding(
     name,
     x,
     y,
     angle,
 ) {
+    companion object {
+        const val CONSTRUCTING_TEXT = "Constructing..."
+        const val CONSTRUCTION_HEALTH_FRACTION_PER_FRAME = 0.001
+    }
+
+    private fun constructionTick() {
+        val maxHealth = type.buildingProperties!!.health
+        if (health >= maxHealth) {
+            SharedSystem.broadcastSetProperty(this, "isConstructing", false)
+            return
+        }
+
+        val newHealth = health + (CONSTRUCTION_HEALTH_FRACTION_PER_FRAME * maxHealth)
+        if (newHealth < maxHealth) {
+            health = newHealth
+        } else {
+            health = maxHealth
+            Game.eventsOut.add(EventTankUpdateHealth(this))
+            SharedSystem.broadcastSetProperty(this, "isConstructing", false)
+        }
+    }
+
+    override fun update() {
+        SharedSystem.broadcastSetPropertyIfNull(this, "isConstructing", true)
+        if (SharedSystem.getBool(this, "isConstructing")) {
+            constructionTick()
+        }
+        super.update()
+    }
+
     init {
-        shootAIType = ShootAI.straight
+        health = 0.01
+    }
+}
+
+class TankSentry(name: String, x: Double, y: Double, angle: Double) : TankEngineerBuilding(
+    name,
+    x,
+    y,
+    angle,
+) {
+    companion object {
+        val CONSTRUCTED_SHOOT_AI = ShootAI.straight
+    }
+    init {
+        // shootai none because it shouldn't be able to shoot while constructing
+        shootAIType = ShootAI.none
 
         turretLength = 65.0
         turretSize = 10.0
@@ -42,11 +88,21 @@ class TankSentry(name: String, x: Double, y: Double, angle: Double) : TankBuildi
 
         emblem = "emblems/angry.png"
     }
+
+    override fun update() {
+        super.update()
+
+        shootAIType = if (SharedSystem.getBool(this, "isConstructing")) {
+            ShootAI.none
+        } else {
+            CONSTRUCTED_SHOOT_AI
+        }
+    }
 }
 
 const val DISPENSER_RADIUS = Game.tile_size * 2.0
 
-class TankDispenser(name: String, x: Double, y: Double, angle: Double) : TankBuilding(
+class TankDispenser(name: String, x: Double, y: Double, angle: Double) : TankEngineerBuilding(
     name,
     x,
     y,
@@ -66,12 +122,16 @@ class TankDispenser(name: String, x: Double, y: Double, angle: Double) : TankBui
 
     private companion object {
         const val DISPENSER_MAX_METAL = 400
-        const val DISPENSER_METAL_REGEN_TIME = 200.0
-        const val DISPENSER_METAL_PER_TRANSFER = 40
+
+        const val DISPENSER_METAL_REGEN_TIME = 250.0
         const val DISPENSER_METAL_PER_REGEN = 40
+
+        const val DISPENSER_METAL_PER_TRANSFER = 40
+        const val DISPENSER_METAL_TRANSFER_TIME = 50.0
+
         // dispenser health regen builds up over time
         const val DISPENSER_TIME_TO_REACH_MAX_HEALTH_REGEN = 600.0
-        const val DISPENSER_MAX_HEALTH_REGEN_PER_FRAME = 1.0/1000.0
+        const val DISPENSER_MAX_HEALTH_REGEN_PER_FRAME = 1.0 / 1000.0
     }
 
     // tank to how long it has been in range
@@ -85,7 +145,10 @@ class TankDispenser(name: String, x: Double, y: Double, angle: Double) : TankBui
         val dispenserMetal = SharedSystem.getInt(this, "metal")
         val engineerMetal = SharedSystem.getInt(engineer, "metal")
 
-        val metalGiven = min(min(DISPENSER_METAL_PER_TRANSFER, dispenserMetal), TankSoldierEngineer.ENGINEER_MAX_METAL - engineerMetal)
+        val metalGiven = min(
+            min(DISPENSER_METAL_PER_TRANSFER, dispenserMetal),
+            TankSoldierEngineer.ENGINEER_MAX_METAL - engineerMetal
+        )
         if (metalGiven <= 0) return
 
         val dispenserMetalAfterTransfer = dispenserMetal - metalGiven
@@ -98,7 +161,7 @@ class TankDispenser(name: String, x: Double, y: Double, angle: Double) : TankBui
             engineer, "metal", engineerMetalAfterTransfer
         )
 
-        metalGiveCooldown = DISPENSER_METAL_REGEN_TIME
+        metalGiveCooldown = DISPENSER_METAL_TRANSFER_TIME
     }
 
     fun attemptRegenMetal() {
@@ -116,6 +179,7 @@ class TankDispenser(name: String, x: Double, y: Double, angle: Double) : TankBui
         super.update()
 
         if (destroy) return
+        if (SharedSystem.getBool(this, "isConstructing")) return
 
         SharedSystem.broadcastSetPropertyIfNull(this, "metal", 0)
 
@@ -160,10 +224,27 @@ class TankDispenser(name: String, x: Double, y: Double, angle: Double) : TankBui
     }
 }
 
+
+
+val sentrySharedDraw = fun(tank: Tank) {
+    if (tank.destroy) return
+
+    if (SharedSystem.getBool(tank, "isConstructing")) {
+        drawTextBelow(tank, CONSTRUCTING_TEXT)
+        return
+    }
+}
+
 val dispenserSharedDraw = fun(tank: Tank) {
     if (tank.destroy) return
-    drawMetalCount(tank)
     val drawing = Drawing.drawing
+
+    if (SharedSystem.getPropertyOrDefault(tank, "isConstructing", false)) {
+        drawTextBelow(tank, CONSTRUCTING_TEXT)
+        return
+    }
+
+    drawMetalCount(tank)
 
     drawing.setColor(getTeamColorOrGray(tank.team).also { it.alpha = 40.0 })
     drawing.fillOval(tank.posX, tank.posY, DISPENSER_RADIUS * 2, DISPENSER_RADIUS * 2)
